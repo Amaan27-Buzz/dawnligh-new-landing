@@ -154,7 +154,9 @@ function setupFinale(): void {
     .to(traveler, { x: 0, y: 0, scale: 1, rotation: 0, duration: .14 }, .81)
     .to(name, { opacity: 1, y: 0, duration: .26 }, .74)
     .to(composite, { opacity: 1, duration: .10 }, .91)
-    .to([sun, traveler, orbitTrack], { opacity: 0, duration: .10 }, .91);
+    .to([sun, traveler, orbitTrack], { opacity: 0, duration: .10 }, .91)
+    // Hold the exact completed artwork long enough to actually see it.
+    .to({}, { duration: .45 }, 1.03);
   const inFinale = () => document.documentElement.classList.add('finale-active');
   const outFinale = () => document.documentElement.classList.remove('finale-active');
   ScrollTrigger.create({

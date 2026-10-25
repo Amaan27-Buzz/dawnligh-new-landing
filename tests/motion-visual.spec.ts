@@ -23,8 +23,9 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * .78, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(800);
   await page.screenshot({ path: 'test-results/motion-capture/04b-orbit-later.png' });
-  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
-  await page.waitForTimeout(1100);
+  // Pause inside the pinned hold, before the footer pushes the finale offscreen.
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.13, behavior: 'instant' }), closingTop);
+  await page.waitForTimeout(1200);
   await page.screenshot({ path: 'test-results/motion-capture/05-exact-final-mark.png' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
