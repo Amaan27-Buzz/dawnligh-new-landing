@@ -673,3 +673,13 @@ html.finale-active .site-header {
 @media(prefers-reduced-motion:reduce) {
  .project-card__art,.project-card__art>.art{will-change:auto}
 }
+
+/* Project typography must stay clear of dimensional circuit artwork. */
+.project-card--kinetable .kine-board {translate:0 -27px;}
+.project-card--kinetable .project-card__art::after {
+ background:linear-gradient(to bottom,transparent 67%,rgba(187,211,192,.18) 72%,rgba(187,211,192,.92) 100%);
+ opacity:1;
+}
+@media(max-width:760px){
+ .project-card--kinetable .kine-board {translate:0 -16px;}
+}

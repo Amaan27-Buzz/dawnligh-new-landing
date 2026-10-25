@@ -46,8 +46,10 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   }
   // The sticky header belongs in the page, not over the isolated artwork screenshot.
   await page.locator('.site-header').evaluate(element => { (element as HTMLElement).style.visibility = 'hidden'; });
+  await page.locator('.skip-link').evaluate(element => { (element as HTMLElement).style.visibility = 'hidden'; });
   await page.locator('.project-grid').first().screenshot({ path: 'test-results/motion-capture/08-cinematic-project-gallery.png' });
   await page.locator('.site-header').evaluate(element => { (element as HTMLElement).style.visibility = ''; });
+  await page.locator('.skip-link').evaluate(element => { (element as HTMLElement).style.visibility = ''; });
     await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
