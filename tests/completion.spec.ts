@@ -133,7 +133,7 @@ test('Research hero is balanced and includes a real visual on desktop and mobile
     expect(overflow).toBeLessThanOrEqual(2);
     if(width>1000){
       const heading=await title.boundingBox();
-      expect(heading!.right).toBeLessThan(diagram!.x+diagram!.width*.35);
+      expect((heading!.x + heading!.width)).toBeLessThan(diagram!.x+diagram!.width*.35);
     }
   }
 });
