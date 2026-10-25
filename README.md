@@ -14,6 +14,43 @@ npm run dev
 
 Open http://localhost:4321
 
+
+## Windows: Rolldown native binding missing
+
+If \`npm run dev\` fails with "Cannot find native binding" or mentions
+\`@rolldown/binding-wasm32-wasi\`, npm may have skipped the Windows x64
+native optional dependency. This is a local dependency installation issue,
+not an Astro source error.
+
+From the project root in PowerShell:
+
+~~~powershell
+node -v
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json -ErrorAction SilentlyContinue
+npm cache verify
+npm install --include=optional
+npm run dev
+~~~
+
+Use Node.js 24 (or at least 22.23.4). The commands only remove generated
+dependencies and the local npm lockfile, not project source or assets.
+
+If the error persists on Windows x64, explicitly install the **matching**
+Rolldown native binding version:
+
+~~~powershell
+$rolldownVersion = node -p "require('./node_modules/rolldown/package.json').version"
+npm install --no-save --include=optional "@rolldown/binding-win32-x64-msvc@$rolldownVersion"
+npm run dev
+~~~
+
+Also check \`npm config get omit\`; it must not exclude \`optional\`.
+On Windows, inspect Microsoft Defender's Protection history if a native
+\`.node\` binary was quarantined. Do not install a mismatched binding version.
+
+Upstream reference: https://rolldown.rs/guide/troubleshooting
+
 ## Quality checks
 
 ~~~powershell
