@@ -331,3 +331,10 @@ html{scroll-behavior:auto}
  .tako-pulse,.hero-orb__halo { animation-name: soft-pulse; }
 }
 @keyframes soft-pulse { 50% { opacity: .78; scale: 1.045; } }
+
+/* Contact address must wrap inside the content grid, not widen mobile viewports. */
+.contact-layout > div { min-width: 0; }
+.contact-link { overflow-wrap: anywhere; word-break: break-word; }
+@media (max-width:760px) {
+  .contact-link { display:block; width:fit-content; max-width:100%; font-size:clamp(17px,4.4vw,25px); }
+}
