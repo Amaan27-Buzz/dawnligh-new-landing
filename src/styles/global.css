@@ -317,3 +317,17 @@ html{scroll-behavior:auto}
 *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 .hero-orb__lit{mask-image:none;-webkit-mask-image:none}
 }
+
+/* Native cross-document navigation. Browsers without support navigate normally. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: dawn-out .35s ease-in both; }
+  ::view-transition-new(root) { animation: dawn-in .53s cubic-bezier(.22,.75,.2,1) both; }
+}
+@keyframes dawn-out { to { opacity: .82; filter: brightness(.98); } }
+@keyframes dawn-in { from { clip-path: circle(0% at 76% 18%); } to { clip-path: circle(160% at 76% 18%); } }
+/* Pulsing objects that do not use translated centering must not jump on animation. */
+@media (prefers-reduced-motion:no-preference) {
+ .tako-pulse,.hero-orb__halo { animation-name: soft-pulse; }
+}
+@keyframes soft-pulse { 50% { opacity: .78; scale: 1.045; } }

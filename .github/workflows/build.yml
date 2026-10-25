@@ -22,3 +22,5 @@ jobs:
         run: npm run check
       - name: Build static site
         run: npm run build
+      - name: Browser smoke tests (desktop and mobile)
+        run: npm run test:browser

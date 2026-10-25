@@ -4,7 +4,7 @@ Research-first, static Astro website for **Dawnlight Labs**.
 
 ## Run locally
 
-Requires Node.js 22.12 or later.
+Requires Node.js 22.23.4 or later, or Node.js 24.
 
 ~~~powershell
 git pull origin main
@@ -20,10 +20,13 @@ Open http://localhost:4321
 npm run test:content
 npm run check
 npm run build
+npm run test:browser
 npm run preview
 ~~~
 
 The site outputs to dist/. There is no server-side application or database.
+
+Browser tests use the local Chrome installation (Playwright channel: chrome). Run npm install first.
 
 ## Pages
 

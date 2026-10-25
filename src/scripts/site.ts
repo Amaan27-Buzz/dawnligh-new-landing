@@ -34,13 +34,13 @@ function setupMotion() {
   gsap.registerPlugin(ScrollTrigger);
   const hero = document.querySelector<HTMLElement>('[data-hero-orb]');
   const heroBody = hero?.querySelector<HTMLElement>('.hero-orb__body');
-  const firstVisit = (() => {
+  const firstVisit = hero && heroBody ? (() => {
     try {
       if (sessionStorage.getItem('dawnlight-intro-played') === 'true') return false;
       sessionStorage.setItem('dawnlight-intro-played', 'true');
       return true;
     } catch { return true; }
-  })();
+  })() : false;
   if (hero && heroBody) {
     if (firstVisit) {
       gsap.set(hero, { '--sweep': '0deg' });
@@ -50,6 +50,7 @@ function setupMotion() {
       intro.to(hero, { '--sweep': '360deg', duration: 1.55, ease: 'power2.inOut' }, .08);
       intro.from('.hero-content .eyebrow', { y: 14, opacity: 0, duration: .6 }, .34);
       intro.from('.hero-content h1', { y: 26, opacity: 0, duration: .82 }, .55);
+      intro.from('.wordmark-name', { opacity: 0, x: -10, duration: .62 }, .72);
       intro.from('.hero-lead, .hero-content .text-link', { y: 14, opacity: 0, duration: .65, stagger: .12 }, .83);
     } else gsap.set(hero, { '--sweep': '360deg' });
     gsap.to(heroBody, {
