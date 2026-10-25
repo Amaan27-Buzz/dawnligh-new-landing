@@ -15,6 +15,20 @@ for (const width of [390, 1440]) {
       await page.goto(path);
       await expect(page.locator('main h1').first()).toBeVisible();
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      if (overflow > 2) {
+        const offenders = await page.evaluate(() => [...document.querySelectorAll('body *')]
+          .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+          .filter(({ rect }) => rect.right > window.innerWidth + 1)
+          .slice(0, 12)
+          .map(({ element, rect }) => ({
+            tag: element.tagName,
+            cls: (element as HTMLElement).className,
+            content: element.textContent?.trim().slice(0, 70),
+            left: Math.round(rect.left), right: Math.round(rect.right),
+            width: Math.round(rect.width),
+          })));
+        console.log('Overflow diagnostics for', path, JSON.stringify(offenders));
+      }
       expect(overflow, 'Horizontal overflow at ' + path).toBeLessThanOrEqual(2);
     }
     expect(exceptions).toEqual([]);
