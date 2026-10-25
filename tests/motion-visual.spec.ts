@@ -34,7 +34,20 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/07-research-multimodal.png' });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
+  const galleryCards = page.locator('.project-grid .project-card');
+  for (const card of await galleryCards.all()) {
+    await card.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(370);
+  }
+  await page.waitForTimeout(1100);
+  for (const card of await galleryCards.all()) {
+    const opacity = await card.evaluate(element => Number.parseFloat(getComputedStyle(element).opacity));
+    expect(opacity).toBeGreaterThan(.97);
+  }
+  // The sticky header belongs in the page, not over the isolated artwork screenshot.
+  await page.locator('.site-header').evaluate(element => { (element as HTMLElement).style.visibility = 'hidden'; });
   await page.locator('.project-grid').first().screenshot({ path: 'test-results/motion-capture/08-cinematic-project-gallery.png' });
+  await page.locator('.site-header').evaluate(element => { (element as HTMLElement).style.visibility = ''; });
     await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
