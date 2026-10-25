@@ -1,3 +1,19 @@
-<!-- Decorative progress complements a fully functional native, draggable scrollbar. -->
-<div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__fill"></span></div>
-<div class="scroll-rail" aria-hidden="true"><span class="scroll-rail__fill"></span><span class="scroll-rail__knob"></span></div>
+<!-- One functional scrollbar on pointer-precise desktops.
+     Native browser scrolling is retained; on touch/small/forced-colors layouts
+     this custom control is not shown and the native scrollbar stays visible. -->
+<div
+  class="dawn-scrollbar"
+  data-dawn-scrollbar
+  role="scrollbar"
+  aria-label="Page scroll position"
+  aria-controls="main"
+  aria-orientation="vertical"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow="0"
+  aria-valuetext="Top of page"
+  tabindex="0"
+>
+  <span class="dawn-scrollbar__track" aria-hidden="true"></span>
+  <span class="dawn-scrollbar__thumb" data-dawn-scrollbar-thumb aria-hidden="true"></span>
+</div>

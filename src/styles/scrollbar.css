@@ -1,0 +1,106 @@
+/* Dawnlight / single functional desktop scroll control.
+ * Desktop: hide the native bar ONLY when the JS-driven scrollbar is initialized.
+ * All other devices or disabled JS: preserve normal browser scrollbars.
+ * Never interfere with wheel, touch, document keyboard scrolling or anchors.
+ */
+.dawn-scrollbar { display:none; }
+
+@media (min-width: 1060px) and (pointer: fine) and (hover: hover) and (forced-colors: none) {
+  html.dawn-scrollbar-ready {
+    scrollbar-width: none;
+    scrollbar-gutter: auto;
+  }
+  html.dawn-scrollbar-ready::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  html.dawn-scrollbar-ready .dawn-scrollbar[data-scrollable="true"] {
+    display:block;
+  }
+  .dawn-scrollbar {
+    position:fixed;
+    z-index:195;
+    top:clamp(93px, 12vh, 124px);
+    right:7px;
+    bottom:26px;
+    width:23px;
+    padding:0;
+    margin:0;
+    background:transparent;
+    border:0;
+    border-radius:20px;
+    cursor:pointer;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+    outline:none;
+    --thumb-y:0px;
+    --thumb-height:64px;
+  }
+  .dawn-scrollbar::before {
+    content:"";
+    position:absolute;inset:-7px -1px;
+    background:rgba(252,248,245,.025);
+    border-radius:22px;
+    opacity:0;
+    transition:opacity .2s ease,background .2s ease;
+    pointer-events:none;
+  }
+  .dawn-scrollbar__track {
+    position:absolute;
+    width:2px;
+    inset-block:0;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(14,68,144,.21);
+    border-radius:8px;
+    transition:background .2s ease,width .2s ease;
+    pointer-events:none;
+  }
+  .dawn-scrollbar__thumb {
+    position:absolute;
+    top:0;
+    left:50%;
+    display:block;
+    width:7px;
+    height:var(--thumb-height);
+    border-radius:999px;
+    background:linear-gradient(180deg,#0E4490 8%,#2679c8 78%,#68b5ed);
+    transform:translate(-50%,var(--thumb-y));
+    box-shadow:0 1px 3px rgba(6,33,72,.16);
+    transition:width .18s ease,box-shadow .18s ease;
+    will-change:transform;
+    pointer-events:none;
+  }
+  .dawn-scrollbar:is(:hover,:focus-visible,.is-dragging)::before {opacity:1;}
+  .dawn-scrollbar:is(:hover,:focus-visible,.is-dragging) .dawn-scrollbar__track {
+    width:3px;
+    background:rgba(14,68,144,.23);
+  }
+  .dawn-scrollbar:is(:hover,:focus-visible,.is-dragging) .dawn-scrollbar__thumb {
+    width:11px;
+    box-shadow:0 0 0 3px rgba(168,218,249,.23),0 2px 12px rgba(6,33,72,.20);
+  }
+  .dawn-scrollbar:focus-visible {
+    outline:2px solid #59715c;
+    outline-offset:2px;
+  }
+  html.finale-active .dawn-scrollbar__track {
+    background:rgba(168,218,249,.28);
+  }
+  html.finale-active .dawn-scrollbar__thumb {
+    background:linear-gradient(180deg,#A8DAF9,#5CB3FA 65%,#2367b0);
+  }
+}
+@media (forced-colors: active) {
+  html { scrollbar-width:auto; scrollbar-color:auto; }
+  .dawn-scrollbar {display:none!important;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .dawn-scrollbar,
+  .dawn-scrollbar::before,
+  .dawn-scrollbar__track,
+  .dawn-scrollbar__thumb {transition:none!important;}
+}

@@ -96,3 +96,8 @@
  .research-hero__diagram,.research-hero__core{will-change:auto}
  .research-hero__visual *{animation:none!important}
 }
+
+/* Keep the immersive opening unobstructed until the brand film exits. */
+@media (min-width: 1060px) and (pointer: fine) and (hover:hover) {
+  html:has([data-intro]) .dawn-scrollbar {visibility:hidden;pointer-events:none;}
+}

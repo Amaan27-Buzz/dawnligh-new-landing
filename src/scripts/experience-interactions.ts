@@ -1,4 +1,7 @@
+import { setupDawnScrollbar } from './dawn-scrollbar';
+
 export function setupSiteInteractions(): void {
+  setupDawnScrollbar();
   // Keep the browser's native scrollbar, wheel, touch and keyboard semantics.
   // This is a visual reading-position indicator, not scroll hijacking.
   const root = document.documentElement;

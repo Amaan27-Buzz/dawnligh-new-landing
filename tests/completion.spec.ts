@@ -2,24 +2,53 @@ import { test, expect } from '@playwright/test';
 
 const projectSlugs = ['oscar','takokit','kinetable','aish'];
 
-test('the branded scrollbar preserves native scroll and visibly tracks progress', async ({ page }) => {
+test('one branded desktop scrollbar replaces the native bar and duplicate rail', async ({ page }) => {
+  await page.setViewportSize({ width:1440, height:900 });
   await page.goto('/research');
-  const scrollProperties = await page.evaluate(() => ({
-    width: getComputedStyle(document.documentElement).scrollbarWidth,
-    color: getComputedStyle(document.documentElement).scrollbarColor,
-    overflow: getComputedStyle(document.documentElement).overflowY,
-  }));
-  expect(scrollProperties.width).toBe('thin');
-  expect(scrollProperties.color).not.toBe('auto');
-  await expect(page.locator('.scroll-progress')).toHaveAttribute('aria-hidden', 'true');
-  await expect(page.locator('.scroll-rail')).toHaveAttribute('aria-hidden', 'true');
-  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior:'instant' }));
-  await expect.poll(async () => page.evaluate(() =>
-    Number.parseFloat(document.documentElement.style.getPropertyValue('--scroll-progress')))).toBeGreaterThan(.90);
-  const current = await page.evaluate(() => window.scrollY);
-  expect(current).toBeGreaterThan(0);
-  await page.getByRole('button', { name: /Back to top/i }).click();
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(25);
+  const bar = page.getByRole('scrollbar', { name:'Page scroll position' });
+  await expect(bar).toBeVisible();
+  await expect(bar).toHaveAttribute('data-scrollable','true');
+  await expect(bar).toHaveAttribute('aria-controls','main');
+  await expect(page.locator('.scroll-rail,.scroll-progress')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth)).toBe('none');
+  await expect(bar).toHaveAttribute('aria-valuenow','0');
+
+  // Clicking the track scrolls the real document.
+  const track = await bar.boundingBox();
+  expect(track).toBeTruthy();
+  await page.mouse.click(track!.x+track!.width/2,track!.y+track!.height*.65);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
+  const beforeDrag=await page.evaluate(() => scrollY);
+  await expect.poll(async () => Number(await bar.getAttribute('aria-valuenow'))).toBeGreaterThan(35);
+
+  // Drag the thumb upward; scroll position follows directly.
+  const thumb = await bar.locator('[data-dawn-scrollbar-thumb]').boundingBox();
+  expect(thumb).toBeTruthy();
+  await page.mouse.move(thumb!.x+thumb!.width/2,thumb!.y+thumb!.height/2);
+  await page.mouse.down();
+  await page.mouse.move(thumb!.x+thumb!.width/2,thumb!.y-85,{steps:8});
+  await page.mouse.up();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(beforeDrag);
+
+  await bar.focus();
+  await page.keyboard.press('End');
+  await expect.poll(async () => Number(await bar.getAttribute('aria-valuenow'))).toBeGreaterThan(98);
+  await page.keyboard.press('Home');
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(10);
+  await page.mouse.move(100,150);
+  await page.mouse.wheel(0,450);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(70);
+  await page.getByRole('button',{name:/Back to top/i}).click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(25);
+});
+
+test('small screens retain the native scrollbar and no overlay', async ({ page }) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/research');
+  await expect(page.getByRole('scrollbar',{name:'Page scroll position'})).toBeHidden();
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth)).not.toBe('none');
+  await page.evaluate(() => scrollTo({top:400,behavior:'instant'}));
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
 });
 
 test('four project pages have distinct interactive concept sequences and honest availability', async ({ page }) => {
