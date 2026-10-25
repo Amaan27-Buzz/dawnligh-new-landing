@@ -338,3 +338,8 @@ html{scroll-behavior:auto}
 @media (max-width:760px) {
   .contact-link { display:block; width:fit-content; max-width:100%; font-size:clamp(17px,4.4vw,25px); }
 }
+
+/* Keep the rotated contact orbit inside the mobile composition. */
+@media (max-width:760px) {
+ .contact-visual::after { width:80%; }
+}
