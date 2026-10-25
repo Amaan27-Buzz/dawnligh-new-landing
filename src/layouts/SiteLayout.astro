@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import '../styles/finish.css';
+import ScrollProgress from '../components/ScrollProgress.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { brand } from '../data/brand';
@@ -24,6 +26,7 @@ const canonical = new URL(path, Astro.site ?? 'https://dawnlightlabs.com');
   </head>
   <body data-path={path}>
     <a class="skip-link" href="#main">Skip to content</a>
+    <ScrollProgress/>
     <Header path={path}/>
     <main id="main"><slot /></main>
     <Footer/>

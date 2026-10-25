@@ -2,11 +2,18 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ProjectGallery from '../../components/ProjectGallery.astro';
 ---
-<SiteLayout path="/projects" title="Projects — Dawnlight Labs" description="Four projects exploring personal intelligence, electronics, voice runtimes and terminal interaction.">
+<SiteLayout path="/projects" title="Projects — Dawnlight Labs" description="Explore OSCAR, Takokit, KineTable and AiSH, four distinct directions in computing and intelligent systems.">
   <section class="page-hero shell page-hero--compact">
-    <span class="eyebrow">Dawnlight / Projects</span>
-    <h1>Selected projects.</h1>
-    <p>Technology we're building and exploring, each with a different problem in view.</p>
+    <span class="eyebrow">Dawnlight / Selected projects</span>
+    <h1>Built from questions.</h1>
+    <p>Different technologies, one laboratory. Explore the ideas and systems we're working to make useful.</p>
   </section>
-  <section class="project-index"><div class="shell"><ProjectGallery/></div></section>
+  <section class="project-index" aria-label="Dawnlight project gallery"><div class="shell"><ProjectGallery/></div></section>
+  <section class="projects-index-outro">
+    <div class="shell projects-index-outro__grid">
+      <span class="eyebrow">Beyond products</span>
+      <h2>Research makes room for the next question.</h2>
+      <div><p>Our projects are one expression of the wider work. Explore the questions behind them.</p><a class="text-link" href="/research">Our research <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </section>
 </SiteLayout>

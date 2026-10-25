@@ -3,14 +3,17 @@ import { brand, navigation } from '../data/brand';
 ---
 <footer class="site-footer">
   <div class="shell footer-main">
-    <a class="footer-wordmark" href="/" aria-label="Dawnlight home"><img src={brand.orb} alt="" width="28" height="28"/> DAWNLIGHT</a>
-    <div class="footer-links">
-      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+    <div>
+      <a class="footer-wordmark" href="/" aria-label="Dawnlight home"><img src={brand.orb} alt="" width="28" height="28"/> DAWNLIGHT</a>
+      <p class="footer-tagline">An independent research laboratory.<span> Technology built around people.</span></p>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      {navigation.map(item => <a href={item.href}>{item.label}</a>)}
     </div>
   </div>
   <div class="shell footer-bottom">
-    <span>© {new Date().getFullYear()} Dawnlight</span>
-    <span>India</span>
-    <a href={'mailto:' + brand.email}>{brand.email}</a>
+    <span>© {new Date().getFullYear()} Dawnlight · India</span>
+    <a href={'mailto:'+brand.email}>{brand.email}</a>
+    <button type="button" class="footer-back-to-top" data-back-to-top aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></button>
   </div>
 </footer>

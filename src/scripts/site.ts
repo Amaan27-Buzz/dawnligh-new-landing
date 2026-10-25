@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { setupResearchAtlases } from './research-atlas';
+import { setupSiteInteractions } from './experience-interactions';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -195,6 +196,7 @@ function setupFinale(): void {
 setupMenu();
 setupScenePausing();
 setupResearchAtlases();
+setupSiteInteractions();
 if (!reducedMotion) gsap.registerPlugin(ScrollTrigger);
 setupIntroduction();
 setupHero();

@@ -1,0 +1,104 @@
+---
+import type { Project } from '../data/projects';
+import { projectStories } from '../data/project-stories';
+const { project } = Astro.props as { project: Project };
+const story = projectStories[project.slug];
+---
+<section class:list={['experience', 'experience--'+project.slug]} data-project-experience={project.slug} aria-labelledby="experience-heading">
+  <div class="shell experience__inner">
+    <div class="experience__heading js-reveal">
+      <div>
+        <span class="eyebrow">02 / Explore the idea</span>
+        <h2 id="experience-heading">{story.sceneTitle}</h2>
+      </div>
+      <p>{story.sceneIntro}</p>
+    </div>
+    <div class="experience__body">
+      <div class="experience__screen" role="img" aria-label={'Conceptual interactive illustration for '+project.name}>
+        <div class="experience__screen-head">
+          <span><i class="experience__signal"></i> {story.label}</span>
+          <span>EXPLORATION / 0<span data-experience-counter>1</span></span>
+        </div>
+        <div class="experience__canvas">
+          <div class="experience__grid" aria-hidden="true"></div>
+          {project.slug === 'oscar' && <svg class="experience__graphic" viewBox="0 0 700 500" aria-hidden="true">
+            <defs>
+              <radialGradient id="xp-oscar-orb" cx=".35" cy=".28" r=".79"><stop stop-color="#d9f6ff"/><stop offset=".25" stop-color="#79c3fc"/><stop offset=".7" stop-color="#0e4490"/><stop offset="1" stop-color="#061b4c"/></radialGradient>
+            </defs>
+            <g class="xp-orbit"><circle cx="350" cy="245" r="183"/><circle cx="350" cy="245" r="131"/><ellipse cx="350" cy="245" rx="239" ry="135" transform="rotate(-20 350 245)"/></g>
+            <g class="xp-link-lines">
+              <path d="M350 245 L146 154 M350 245 L535 129 M350 245 L568 341 M350 245 L177 368"/>
+              <path d="M146 154 L535 129 M568 341 L177 368" stroke-dasharray="3 13"/>
+            </g>
+            <g class="xp-unit" data-concept-phase="0" transform="translate(114 121)"><rect width="65" height="65" rx="14"/><path d="M17 31 H48 M32 16 V47"/><circle cx="32" cy="31" r="20"/></g>
+            <g class="xp-unit" data-concept-phase="1" transform="translate(503 97)"><rect width="65" height="65" rx="14"/><path d="M17 33 L27 22 L38 39 L48 27"/><circle cx="32" cy="32" r="20"/></g>
+            <g class="xp-unit" data-concept-phase="2" transform="translate(536 308)"><rect width="65" height="65" rx="14"/><path d="M17 31 H47 M22 23 H42 M22 41 H42"/><circle cx="32" cy="32" r="20"/></g>
+            <g class="xp-unit xp-unit--sub" transform="translate(144 335)"><rect width="65" height="65" rx="14"/><path d="M18 31 L30 40 L47 20"/></g>
+            <circle class="xp-orb-halo" cx="350" cy="245" r="89"/>
+            <circle class="xp-orb-main" cx="350" cy="245" r="64" fill="url(#xp-oscar-orb)"/>
+            <circle cx="334" cy="224" r="7" fill="#e5f7ff"/>
+            <text class="xp-screen-label" x="350" y="353" text-anchor="middle">PERSONAL INTELLIGENCE / CONNECTED SYSTEM</text>
+          </svg>}
+          {project.slug === 'takokit' && <svg class="experience__graphic" viewBox="0 0 700 500" aria-hidden="true">
+            <g class="xp-tako-rulers">
+              {Array.from({length:21},(_,i)=><line x1={70+i*28} y1="126" x2={70+i*28} y2="378"/>)}
+              <path d="M68 252 H635 M68 185 H635 M68 317 H635"/>
+            </g>
+            <g class="xp-tako-wave">
+              <path d="M68 252 C108 252 108 228 146 252 S207 322 247 252 S307 146 349 252 S422 368 460 252 S524 185 560 252 S614 286 634 252"/>
+              <path class="xp-tako-wave__echo" d="M68 252 C112 252 104 276 146 252 S211 183 247 252 S312 358 349 252 S427 142 460 252 S522 319 560 252 S620 218 634 252"/>
+            </g>
+            <g class="xp-tako-modules">
+              <g data-concept-phase="0"><rect x="86" y="77" width="146" height="44" rx="6"/><text x="159" y="104" text-anchor="middle">AUDIO INPUT</text></g>
+              <g data-concept-phase="1"><rect x="276" y="77" width="146" height="44" rx="6"/><text x="349" y="104" text-anchor="middle">SPEECH OUTPUT</text></g>
+              <g data-concept-phase="2"><rect x="466" y="77" width="146" height="44" rx="6"/><text x="539" y="104" text-anchor="middle">MODEL ROUTING</text></g>
+            </g>
+            <circle class="xp-tako-playhead" cx="349" cy="252" r="12"/>
+            <path class="xp-tako-playhead-line" d="M349 135 V370"/>
+            <text class="xp-screen-label" x="350" y="424" text-anchor="middle">LOCAL VOICE WORKFLOW / SYMBOLIC SIGNAL</text>
+          </svg>}
+          {project.slug === 'kinetable' && <svg class="experience__graphic" viewBox="0 0 700 500" aria-hidden="true">
+            <defs><pattern id="xp-pcb-grid" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#91ba9e" opacity=".28"/></pattern></defs>
+            <rect class="xp-kine-board" x="79" y="56" width="545" height="384" rx="21"/>
+            <rect x="79" y="56" width="545" height="384" rx="21" fill="url(#xp-pcb-grid)"/>
+            <g class="xp-kine-traces">
+              <path d="M80 134 H185 L235 192 H390 L440 124 H624 M80 379 H212 L268 326 H453 L509 376 H624"/>
+              <path d="M152 55 V165 L211 230 H473 L534 288 H623 M80 298 H190 L250 264 H431 L486 203 H624"/>
+            </g>
+            <g class="xp-kine-component" data-concept-phase="0" transform="translate(178 134)"><rect x="-53" y="-39" width="106" height="78" rx="9"/><rect x="-26" y="-19" width="52" height="38" rx="3"/><path d="M-53 -12 H-74 M-53 12 H-74 M53 -12 H74 M53 12 H74"/></g>
+            <g class="xp-kine-component" data-concept-phase="1" transform="translate(405 249)"><rect x="-64" y="-44" width="128" height="88" rx="10"/><rect x="-35" y="-23" width="70" height="46" rx="5"/><path d="M-64 -15 H-83 M-64 15 H-83 M64 -15 H83 M64 15 H83"/></g>
+            <g class="xp-kine-component" data-concept-phase="2" transform="translate(253 348)"><rect x="-48" y="-32" width="96" height="64" rx="8"/><rect x="-26" y="-16" width="52" height="32" rx="4"/></g>
+            {[[235,192],[440,124],[268,326],[534,288],[486,203],[211,230]].map(([x,y])=><g><circle class="xp-kine-node-halo" cx={x} cy={y} r="16"/><circle class="xp-kine-node" cx={x} cy={y} r="6"/></g>)}
+            <text class="xp-screen-label" x="350" y="475" text-anchor="middle">COMPONENTS / CONNECTIONS / EXPLORATION</text>
+          </svg>}
+          {project.slug === 'aish' && <div class="experience__terminal" aria-hidden="true">
+            <div class="experience__terminal-window"><span></span><span></span><span></span><small>illustrative terminal / no execution</small></div>
+            <div class="experience__terminal-lines">
+              <div class="experience__terminal-prompt"><b>›</b><span data-concept-phase="0">Describe an intention</span><span data-concept-phase="1">Review a suggested sequence</span><span data-concept-phase="2">Keep approval in your hands</span><i></i></div>
+              <div class="experience__terminal-divider"></div>
+              <div class="experience__terminal-output"><span class="terminal-line-label">PLAN / PREVIEW ONLY</span><div class="experience__terminal-skeleton"><i></i><i></i><i></i></div></div>
+              <div class="experience__terminal-approval"><span>⦿</span> Awaiting user review <span class="experience__terminal-lock">NO COMMAND EXECUTED</span></div>
+            </div>
+          </div>}
+          <div class="experience__scan" aria-hidden="true"></div>
+        </div>
+        <div class="experience__screen-foot">
+          <span data-experience-tag>{story.steps[0].tag}</span>
+          <span>ILLUSTRATION · NOT A LIVE PRODUCT DEMO</span>
+        </div>
+      </div>
+      <div class="experience__steps" role="group" aria-label={'Explore '+project.name+' concepts'}>
+        {story.steps.map((step,i)=><button
+          type="button"
+          class:list={['experience__step',{'is-active':i===0}]}
+          data-experience-step={i}
+          aria-pressed={i===0?'true':'false'}>
+          <span class="experience__step-top"><span>{step.index} / {step.eyebrow}</span><span aria-hidden="true" class="experience__step-icon">↗</span></span>
+          <strong>{step.title}</strong>
+          <span class="experience__step-summary">{step.summary}</span>
+        </button>)}
+        <div class="experience__disclaimer">INTERACTIVE CONCEPT · PURPOSEFUL ILLUSTRATION, NOT A CLAIM OF RELEASED FUNCTIONALITY.</div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { brand } from '../data/brand';
+---
+<SiteLayout title="Page not found — Dawnlight Labs" description="That page could not be found." path="/404">
+  <section class="not-found shell">
+    <div class="not-found__content"><span class="eyebrow">Dawnlight / Lost signal</span><h1>404<span>.</span></h1><p>We couldn't find that page. There are other paths worth exploring.</p><a href="/" class="text-link">Return to Dawnlight <span aria-hidden="true">↗</span></a></div>
+    <img src={brand.orb} alt="" width="290" height="289"/>
+  </section>
+</SiteLayout>

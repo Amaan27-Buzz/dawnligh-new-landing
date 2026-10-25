@@ -2,17 +2,31 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { brand } from '../data/brand';
 ---
-<SiteLayout path="/contact" title="Contact — Dawnlight Labs" description="Contact Dawnlight Labs in India.">
-  <section class="contact-page">
-    <div class="shell contact-layout" style="width:100%">
-      <div>
+<SiteLayout path="/contact" title="Contact — Dawnlight Labs" description="Contact Dawnlight Labs, an independent research laboratory in India.">
+  <section class="contact-refined" aria-labelledby="contact-heading">
+    <div class="shell contact-refined__layout">
+      <div class="contact-refined__copy">
         <span class="eyebrow">Dawnlight / Contact</span>
-        <h1>Let's talk.</h1>
-        <p style="font-size:19px;max-width:36ch;margin-top:25px">Questions, ideas or potential collaborations? Get in touch.</p>
-        <a class="contact-link" href={'mailto:' + brand.email}>{brand.email} ↗</a>
-        <div class="contact-country">India</div>
+        <h1 id="contact-heading">Start a conversation.</h1>
+        <p>Research, collaborations, questions or an idea worth discussing. We're listening.</p>
+        <div class="contact-refined__direct">
+          <span class="contact-refined__label">ONE GENERAL INBOX</span>
+          <a href={'mailto:'+brand.email} class="contact-refined__email">{brand.email} <span aria-hidden="true">↗</span></a>
+          <button type="button" class="contact-refined__copy" data-copy-email={brand.email}>Copy address <span aria-hidden="true">⧉</span></button>
+          <p class="contact-refined__status" role="status" aria-live="polite" data-copy-status></p>
+        </div>
+        <div class="contact-refined__location"><span>BASED IN</span><strong>{brand.country}</strong></div>
       </div>
-      <div class="contact-visual" aria-hidden="true"><img src={brand.orb} alt="" width="290" height="289"/></div>
+      <div class="contact-refined__art" aria-hidden="true">
+        <div class="contact-refined__ring contact-refined__ring--outer"></div>
+        <div class="contact-refined__ring contact-refined__ring--inner"></div>
+        <img src={brand.orb} alt="" width="290" height="289"/>
+        <div class="contact-refined__beam"></div>
+        <span class="contact-refined__art-caption">DAWNLIGHT / AN OPEN LINE</span>
+      </div>
     </div>
+  </section>
+  <section class="contact-refined__closing">
+    <div class="shell contact-refined__closing-grid"><span>BUILD WHAT SHOULD EXIST.</span><p>Technology built around people.</p><a href="/about" class="text-link">About Dawnlight <span aria-hidden="true">↗</span></a></div>
   </section>
 </SiteLayout>
