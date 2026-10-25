@@ -54,6 +54,9 @@ test('site works without unnecessary form or founder disclosures outside About',
   await page.goto('/about');
   await expect(page.getByRole('heading', {name:'Amaan Syed'})).toBeVisible();
   await expect(page.getByRole('heading', {name:'Sairaj Jawalikar'})).toBeVisible();
+  for (const card of await page.locator('.founder').all()) {
+    await expect(card).toHaveCSS('opacity','1');
+  }
 });
 
 test('sitemap is public and includes all approved routes, while publications remain unlisted', async ({ request }) => {

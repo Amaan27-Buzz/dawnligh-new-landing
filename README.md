@@ -65,6 +65,16 @@ The site outputs to dist/. There is no server-side application or database.
 
 Browser tests use the installed Chrome (Playwright channel: chrome). Run npm run build before npm run test:browser; the tests auto-start Astro's production preview when necessary.
 
+## Implementation layout
+
+- src/styles/global.css — founding brand rules, hero, research, gallery and core layouts
+- src/styles/finish.css — branded scrollbar, accessible progress rail and complete inner-page design
+- src/components/ProjectExperience.astro — accessible, three-state illustrated concept scenes
+- src/data/project-stories.ts — per-project copy and conceptual interaction structure
+- src/scripts/experience-interactions.ts — native scroll progress, project selection, copy-email and back-to-top controls
+- src/scripts/site.ts — global GSAP identity and scroll sequences
+- tests/site.spec.ts, tests/motion-visual.spec.ts, tests/completion.spec.ts — browser QA
+
 ## Pages
 
 - / — corporate introduction, animated original orb, research, project gallery and sun-mark closing
@@ -73,6 +83,8 @@ Browser tests use the installed Chrome (Playwright channel: chrome). Run npm run
 - /projects/oscar, /projects/kinetable, /projects/takokit, /projects/aish — project overviews
 - /about — Dawnlight philosophy and founders
 - /contact — the single general inbox
+- /404 — custom missing-page response
+- /sitemap.xml and /robots.txt — discoverable approved routes
 
 ## Asset handling
 
@@ -86,9 +98,27 @@ Approved public research areas live in src/data/research.ts. approvedPrograms in
 
 No internal research architecture, proposed governance, ownership details or unpublished results belong on this website.
 
-## Implementation status
+## Website completion and release readiness
 
-This is an initial code implementation, not a claim of a launched or fully verified website. Check opening and closing motion on a GPU-enabled Chrome browser; verify responsive behavior, reduced motion, keyboard navigation, copy and release claims before deploying.
+The corporate website is implemented as a modular Astro static site:
+- Full-page opening animation and scroll-linked closing composition using the supplied original Dawnlight identity.
+- Interactive six-domain research atlas; public research programs appear only with disclosure approval.
+- Cinematic gallery and individual interactive, clearly labelled *conceptual* experiences for all four projects.
+- About page with verified founder names and roles; Contact page with one general mailbox.
+- Custom blue native scrollbar and decorative reading progress rail. The scrollbar remains draggable, and native wheel, touch and keyboard scrolling are preserved.
+- Accessible mobile navigation, reduced-motion presentation, responsive layouts, sitemap, robots.txt and 404 page.
+- Playwright smoke and interaction tests plus CI-captured page screenshots.
+
+### Actual public launch blockers
+
+Do not interpret a successful CI run as permission to deploy:
+1. **The repository may be public and still contains the INTERNAL Foundation Kit**, including history. Restrict repository visibility and review or purge confidential history with owner approval before sharing the source.
+2. Verify commercial web-embedding/redistribution rights for **AZONIX, Neuhade and DM Mono**.
+3. Obtain appropriate legal/privacy review for the selected hosting environment. Do not add invented privacy or legal guarantees.
+4. Review the accuracy of each project claim, whether any repository/subdomain is truly live, and any future public research programs.
+5. Configure a production host and DNS only with the owner's chosen account/domain, then test the deployed site.
+
+The site's code is completed and validated by its test suite, while production release and public-content approvals remain separate.
 
 ## Brand
 
