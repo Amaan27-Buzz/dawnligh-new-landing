@@ -20,13 +20,13 @@ Open http://localhost:4321
 npm run test:content
 npm run check
 npm run build
-npm run test:browser
 npm run preview
+npm run test:browser
 ~~~
 
 The site outputs to dist/. There is no server-side application or database.
 
-Browser tests use the local Chrome installation (Playwright channel: chrome). Run npm install first.
+Browser tests use the installed Chrome (Playwright channel: chrome). Run npm run build before npm run test:browser; the tests auto-start Astro's production preview when necessary.
 
 ## Pages
 

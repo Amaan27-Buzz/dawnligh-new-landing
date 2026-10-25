@@ -27,6 +27,11 @@ test('home renders approved project visuals and original identity assets', async
   for (const slug of ['oscar', 'kinetable', 'takokit', 'aish']) {
     await expect(page.locator('.project-card--' + slug)).toHaveAttribute('href', '/projects/' + slug);
   }
+  await page.locator('.closing__final').scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => [...document.querySelectorAll('.hero-orb img, .closing__final')].every((node) => {
+    const image = node as HTMLImageElement;
+    return image.complete && image.naturalWidth > 0;
+  }));
   const images = await page.locator('.hero-orb img, .closing__final').evaluateAll(
     (items) => items.map((item) => {
       const image = item as HTMLImageElement;

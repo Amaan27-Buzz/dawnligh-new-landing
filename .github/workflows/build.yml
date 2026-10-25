@@ -22,5 +22,14 @@ jobs:
         run: npm run check
       - name: Build static site
         run: npm run build
+      - name: Start production preview
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/dawnlight-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4321/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/dawnlight-preview.log
+          exit 1
       - name: Browser smoke tests (desktop and mobile)
         run: npm run test:browser

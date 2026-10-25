@@ -11,9 +11,9 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1',
+    command: 'npm run preview -- --host 127.0.0.1 --port 4321',
     url: 'http://127.0.0.1:4321/',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    reuseExistingServer: true,
+    timeout: 45_000,
   },
 });
