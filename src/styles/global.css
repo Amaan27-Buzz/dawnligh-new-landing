@@ -531,3 +531,16 @@ html{scroll-behavior:auto}
    the final lit layer remains the unmodified brand SVG. */
 .intro-sequence__base { filter:brightness(.80) saturate(1.07); }
 .intro-sequence__arc { mix-blend-mode:screen; filter:drop-shadow(0 0 18px #87d0ff) brightness(1.55); }
+
+/* The corporate navigation recedes during the full-frame closing identity. */
+.site-header {
+  transition: transform .55s cubic-bezier(.25,.8,.2,1), opacity .35s ease;
+}
+html.finale-active .site-header {
+  transform:translateY(-110%);
+  opacity:0;
+  pointer-events:none;
+}
+@media(prefers-reduced-motion:reduce) {
+  html.finale-active .site-header { transform:none;opacity:1;pointer-events:auto; }
+}

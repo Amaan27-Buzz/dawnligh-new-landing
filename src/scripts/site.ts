@@ -155,6 +155,17 @@ function setupFinale(): void {
     .to(name, { opacity: 1, y: 0, duration: .26 }, .74)
     .to(composite, { opacity: 1, duration: .10 }, .91)
     .to([sun, traveler, orbitTrack], { opacity: 0, duration: .10 }, .91);
+  const inFinale = () => document.documentElement.classList.add('finale-active');
+  const outFinale = () => document.documentElement.classList.remove('finale-active');
+  ScrollTrigger.create({
+    trigger: closing,
+    start: 'top top',
+    end: 'bottom top',
+    onEnter: inFinale,
+    onEnterBack: inFinale,
+    onLeave: outFinale,
+    onLeaveBack: outFinale,
+  });
 }
 
 setupMenu();
