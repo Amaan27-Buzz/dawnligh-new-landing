@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { setupResearchAtlases } from './research-atlas';
 import { setupSiteInteractions } from './experience-interactions';
+import { setupEditorialMotion } from './editorial-motion';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -201,4 +202,5 @@ if (!reducedMotion) gsap.registerPlugin(ScrollTrigger);
 setupIntroduction();
 setupHero();
 setupContentMotion();
+setupEditorialMotion();
 setupFinale();

@@ -1,0 +1,98 @@
+/* Dawnlight — editorial research lens and cinematic scroll refinements.
+   These effects complement native scrolling and retain reduced-motion fallbacks. */
+.research-hero {
+  min-height: min(880px, calc(100svh - var(--header-height)));
+  display:flex; flex-direction:column;justify-content:center;
+  position:relative;isolation:isolate;overflow:hidden;
+  background:var(--paper);
+}
+.research-hero__layout {
+  display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+  align-items:center;gap:clamp(20px,4vw,68px);
+  width:100%;padding-block:clamp(65px,8vw,115px) clamp(57px,6vw,90px);
+}
+.research-hero__copy{z-index:2;max-width:700px;position:relative}
+.research-hero .eyebrow {margin-bottom:clamp(24px,3vw,42px);color:var(--blue)}
+.research-hero h1{font-size:clamp(60px,6.25vw,100px);letter-spacing:-.062em;line-height:1.045}
+.research-hero h1 span{display:block;white-space:nowrap}
+.research-hero h1 span:nth-child(2){color:var(--blue)}
+.research-hero__copy>p{font-size:clamp(18px,1.65vw,24px);line-height:1.5;max-width:47ch;margin-top:32px}
+.research-hero__explore{display:inline-flex;align-items:center;justify-content:space-between;gap:42px;border-bottom:1px solid currentColor;
+ font-size:15px;margin-top:34px;padding-bottom:10px;transition:color .25s}
+.research-hero__explore span{transition:transform .3s}
+.research-hero__explore:hover{color:var(--blue)}
+.research-hero__explore:hover span{transform:translateY(5px)}
+.research-hero__visual{width:100%;max-width:620px;aspect-ratio:1;position:relative;
+ display:grid;place-items:center;isolation:isolate;justify-self:end;perspective:1100px}
+.research-hero__plane{position:absolute;inset:10%;border-radius:50%;
+ background:radial-gradient(circle at 45% 48%,rgba(168,218,249,.28),transparent 61%);filter:blur(25px)}
+.research-hero__diagram{width:100%;height:100%;position:relative;overflow:visible;transform-origin:center}
+.lens-ring{stroke:#0e4490;stroke-width:1;opacity:.16}
+.lens-ring--outer{stroke-dasharray:4 10}
+.lens-ring--inner{opacity:.22;stroke-dasharray:2 7}
+.lens-ring--center{opacity:.21}
+.lens-ellipses ellipse{stroke:#307bbd;stroke-width:1.25;opacity:.4;stroke-dasharray:5 9}
+.lens-vectors path{stroke:#0e4490;stroke-width:1.2;opacity:.22;stroke-dasharray:4 9}
+.lens-nodes text{font:12px 'DM Mono',monospace;fill:#0e4490}
+.lens-node{fill:#0e4490;stroke:#A8DAF9;stroke-width:2}
+.lens-node-halo{fill:rgba(168,218,249,.48)}
+.research-hero__core{position:absolute;width:clamp(126px,12vw,180px);aspect-ratio:1;display:grid;place-items:center;
+ filter:drop-shadow(19px 27px 27px rgba(14,68,144,.20));}
+.research-hero__core img{width:100%;height:auto}
+.research-hero__dial{position:absolute;display:flex;justify-content:space-between;gap:15px;width:90%;
+ font:10px/1.5 'DM Mono',monospace;letter-spacing:.07em;color:#69869e}
+.research-hero__dial--top{top:-2%}
+.research-hero__dial--bottom{bottom:-3%}
+.research-hero__bottom{display:flex;justify-content:space-between;gap:20px;padding-top:22px;padding-bottom:26px;
+ border-top:1px solid var(--line);width:100%;font:10px/1.5 'DM Mono',monospace;letter-spacing:.08em;color:#7b807e}
+.research-hero__bottom i{font:18px Neuhade,sans-serif;padding-left:12px;font-style:normal;color:var(--blue)}
+.research-hero__diagram,.research-hero__core {will-change:transform}
+@media(prefers-reduced-motion:no-preference){
+  .research-hero__visual .lens-ring--outer{animation:lens-breathe 11s linear infinite}
+  .research-hero__visual .lens-ellipses{transform-origin:300px 300px;animation:lens-orbit 55s linear infinite}
+  .research-hero__visual .lens-node-halo{transform-box:fill-box;transform-origin:center;animation:lens-pulse 3s ease-in-out infinite}
+  .research-hero__visual .lens-nodes g:nth-child(2n) .lens-node-halo{animation-delay:-1.7s}
+}
+@keyframes lens-orbit{to{transform:rotate(360deg)}}
+@keyframes lens-pulse{50%{opacity:.23;transform:scale(1.35)}}
+@keyframes lens-breathe{50%{stroke-dashoffset:100}100%{stroke-dashoffset:200}}
+
+/* The orb begins concealed BEHIND the yellow sun. It only becomes a
+   foreground body when it clears the solar edge, on its way to the master SVG pose. */
+.closing--sequence .closing__orbit-track{z-index:0}
+.closing--sequence .closing__traveler--behind{z-index:1;filter:drop-shadow(2px 10px 10px rgba(0,0,0,.16))}
+.closing--sequence .closing__sun-disc{z-index:2}
+.closing--sequence .closing__traveler:not(.closing__traveler--behind){z-index:3}
+.closing--sequence .closing__final{z-index:4}
+.closing--sequence .closing__stage{overflow:visible}
+/* Editorial entrances follow section structure, never block reading. */
+.research-culture-grid .culture-item{position:relative;overflow:hidden}
+.research-culture-grid .culture-item::before{content:"";position:absolute;top:0;left:0;height:1px;
+ width:100%;background:#A8DAF9;opacity:.68;transform:scaleX(0);transform-origin:left}
+.research-section-rule{display:block;width:100%;height:1px;transform:scaleX(.4);transform-origin:left;background:var(--blue);opacity:.32}
+@media(max-width:1100px){
+ .research-hero__layout{grid-template-columns:1fr .95fr;gap:7px}
+ .research-hero h1{font-size:clamp(51px,5.9vw,77px)}
+ .research-hero__visual{max-width:510px}
+ .research-hero__dial{font-size:9px}
+}
+@media(max-width:760px){
+ .research-hero{min-height:auto}
+ .research-hero__layout{display:flex;flex-direction:column;align-items:flex-start;gap:24px;padding-block:76px 55px}
+ .research-hero h1{font-size:clamp(43px,9.5vw,71px)}
+ .research-hero__copy>p{font-size:19px;margin-top:24px;max-width:37ch}
+ .research-hero__visual{width:min(100%,435px);align-self:center;max-width:none;margin-inline:auto}
+ .research-hero__core{width:27%}
+ .research-hero__dial{font-size:9px}
+ .research-hero__bottom{padding-bottom:17px}
+ .research-hero__bottom span:first-child{display:none}
+}
+@media(max-width:390px){
+ .research-hero h1{font-size:clamp(38px,10.1vw,45px)}
+ .research-hero__layout{padding-top:58px}
+ .research-hero__dial{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .research-hero__diagram,.research-hero__core{will-change:auto}
+ .research-hero__visual *{animation:none!important}
+}

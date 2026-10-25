@@ -1,0 +1,40 @@
+---
+import { brand } from '../data/brand';
+---
+<section class="research-hero" aria-labelledby="research-title">
+  <div class="shell research-hero__layout">
+    <div class="research-hero__copy">
+      <span class="eyebrow research-hero__eyebrow">Dawnlight / Research</span>
+      <h1 id="research-title"><span>Curiosity,</span><span>with purpose.</span></h1>
+      <p>We explore how intelligence, computing and interaction can become more capable, efficient and useful.</p>
+      <a href="#areas" class="research-hero__explore">Explore our research <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="research-hero__visual" aria-hidden="true" data-research-lens>
+      <div class="research-hero__plane"></div>
+      <svg viewBox="0 0 600 600" class="research-hero__diagram" fill="none" aria-hidden="true">
+        <circle cx="300" cy="300" r="247" class="lens-ring lens-ring--outer"/>
+        <circle cx="300" cy="300" r="195" class="lens-ring lens-ring--inner"/>
+        <circle cx="300" cy="300" r="145" class="lens-ring lens-ring--center"/>
+        <g class="lens-ellipses">
+          <ellipse cx="300" cy="300" rx="268" ry="132" transform="rotate(-33 300 300)"/>
+          <ellipse cx="300" cy="300" rx="269" ry="132" transform="rotate(54 300 300)"/>
+        </g>
+        <g class="lens-vectors">
+          <path d="M300 300 L96 180 M300 300 L462 119 M300 300 L539 329 M300 300 L439 501 M300 300 L166 494 M300 300 L70 332"/>
+        </g>
+        <g class="lens-nodes">
+          <g transform="translate(96 180)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">01</text></g>
+          <g transform="translate(462 119)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">02</text></g>
+          <g transform="translate(539 329)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">03</text></g>
+          <g transform="translate(439 501)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">04</text></g>
+          <g transform="translate(166 494)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">05</text></g>
+          <g transform="translate(70 332)"><circle r="17" class="lens-node-halo"/><circle r="5" class="lens-node"/><text x="18" y="-14">06</text></g>
+        </g>
+      </svg>
+      <div class="research-hero__core"><img src={brand.orb} alt="" width="290" height="289"/></div>
+      <div class="research-hero__dial research-hero__dial--top"><span>01—06</span><span>FIELDS OF INVESTIGATION</span></div>
+      <div class="research-hero__dial research-hero__dial--bottom"><span>EXPLORE THE UNKNOWN</span><span>DL / RESEARCH</span></div>
+    </div>
+  </div>
+  <div class="shell research-hero__bottom"><span>RESEARCH, NOT JUST PRODUCTS</span><span>SCROLL TO EXPLORE <i aria-hidden="true">↓</i></span></div>
+</section>

@@ -16,22 +16,29 @@ test('render opening and closing frames for visual review', async ({ page }) => 
     element.getBoundingClientRect().top + window.scrollY);
   await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * .36, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(1150);
-  const travelerOpacity = await page.locator('.closing__traveler').evaluate(element =>
+  const travelerOpacity = await page.locator('.closing__traveler--behind').evaluate(element =>
     parseFloat(getComputedStyle(element).opacity));
   expect(travelerOpacity, 'Orb should be visible while orbiting').toBeGreaterThan(.08);
   await page.screenshot({ path: 'test-results/motion-capture/04-orbit-in-progress.png' });
-  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * .78, behavior: 'instant' }), closingTop);
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.00, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(800);
   await page.screenshot({ path: 'test-results/motion-capture/04b-orbit-later.png' });
   // Pause inside the pinned hold, before the footer pushes the finale offscreen.
-  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.13, behavior: 'instant' }), closingTop);
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.49, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'test-results/motion-capture/05-exact-final-mark.png' });
   await page.goto('/research');
+  await page.waitForTimeout(1150);
+  await page.screenshot({ path: 'test-results/motion-capture/09-research-hero-desktop.png' });
   await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/06-research-atlas.png' });
   await page.locator('[data-atlas-trigger="3"]').click();
   await page.waitForTimeout(700);
   await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/07-research-multimodal.png' });
+  await page.setViewportSize({ width:390,height:844 });
+  await page.goto('/research');
+  await page.waitForTimeout(1100);
+  await page.screenshot({ path: 'test-results/motion-capture/09b-research-hero-mobile.png' });
+  await page.setViewportSize({ width:1440,height:900 });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
   const galleryCards = page.locator('.project-grid .project-card');

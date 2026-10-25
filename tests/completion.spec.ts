@@ -113,3 +113,49 @@ test('capture finished project, About and Contact pages for design review', asyn
   await page.goto('/contact');
   await page.screenshot({path:'test-results/motion-capture/contact-mobile.png'});
 });
+
+
+test('Research hero is balanced and includes a real visual on desktop and mobile', async ({ page }) => {
+  for(const width of [390,768,1440]) {
+    await page.setViewportSize({width,height:900});
+    await page.goto('/research');
+    const visual=page.locator('[data-research-lens]');
+    const title=page.locator('#research-title');
+    await expect(visual).toBeVisible();
+    await expect(title).toBeVisible();
+    await expect(visual.locator('svg .lens-nodes>g')).toHaveCount(6);
+    const hero=page.locator('.research-hero');
+    const box=await hero.boundingBox();
+    const diagram=await visual.boundingBox();
+    expect(box && diagram).toBeTruthy();
+    expect(diagram!.width).toBeGreaterThan(width<760?200:310);
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+    if(width>1000){
+      const heading=await title.boundingBox();
+      expect(heading!.right).toBeLessThan(diagram!.x+diagram!.width*.35);
+    }
+  }
+});
+
+test('home finale starts blue orb behind sun, transitions forward, and resolves to master logo', async ({ page }) => {
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toHaveCount(0,{timeout:8000});
+  const back=page.locator('.closing__traveler--behind');
+  const front=page.locator('.closing__traveler:not(.closing__traveler--behind)');
+  const sun=page.locator('.closing__sun-disc');
+  const final=page.locator('.closing__final');
+  expect(await back.evaluate(el=>getComputedStyle(el).zIndex)).toBe('1');
+  expect(await sun.evaluate(el=>getComputedStyle(el).zIndex)).toBe('2');
+  expect(await front.evaluate(el=>getComputedStyle(el).zIndex)).toBe('3');
+  const start=await page.locator('[data-closing]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+  await page.evaluate(y=>scrollTo({top:y+innerHeight*.39,behavior:'instant'}),start);
+  await expect.poll(()=>back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.25);
+  expect(await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity))).toBeLessThan(.2);
+  await page.evaluate(y=>scrollTo({top:y+innerHeight*1.06,behavior:'instant'}),start);
+  await expect.poll(()=>front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.5);
+  await page.evaluate(y=>scrollTo({top:y+innerHeight*1.5,behavior:'instant'}),start);
+  await expect.poll(()=>final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
+  await expect(final).toHaveAttribute('src',/dawnlight%20with%20sun%20svg.svg/);
+});
