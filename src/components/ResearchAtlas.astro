@@ -1,0 +1,119 @@
+---
+import { researchAreas } from '../data/research';
+const { variant = 'default' } = Astro.props;
+---
+<div class:list={['research-atlas', {'research-atlas--full':variant === 'full'}]} data-research-atlas>
+  <div class="research-atlas__index" role="group" aria-label="Explore Dawnlight research fields">
+    {researchAreas.map((area, index) => (
+      <button
+        type="button"
+        class:list={['research-atlas__field', {'is-active':index===0}]}
+        data-atlas-trigger={index}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+        aria-controls="research-atlas-visual"
+      >
+        <span class="research-atlas__number">{area.number}</span>
+        <span class="research-atlas__field-copy">
+          <span class="research-atlas__title">{area.title}</span>
+          <span class="research-atlas__detail">{area.detail}</span>
+        </span>
+        <span class="research-atlas__field-arrow" aria-hidden="true">↗</span>
+      </button>
+    ))}
+  </div>
+  <div class="research-atlas__visual" id="research-atlas-visual">
+    <div class="research-atlas__stage" aria-hidden="true">
+      <div class="research-atlas__glow"></div>
+      <svg class="research-atlas__svg" viewBox="0 0 720 560" role="presentation">
+        <defs>
+          <radialGradient id="atlas-node" cx=".35" cy=".25" r=".8">
+            <stop stop-color="#d7f5ff"/><stop offset=".34" stop-color="#8ad3ff"/><stop offset="1" stop-color="#0f6caf"/>
+          </radialGradient>
+          <linearGradient id="atlas-path" x1="0" x2="1">
+            <stop stop-color="#2077cc"/><stop offset=".55" stop-color="#abe5ff"/><stop offset="1" stop-color="#2077cc"/>
+          </linearGradient>
+          <linearGradient id="atlas-scan" x1="0" x2="0" y1="0" y2="1">
+            <stop stop-color="#a8daf9" stop-opacity="0"/>
+            <stop offset=".5" stop-color="#a8daf9" stop-opacity=".85"/>
+            <stop offset="1" stop-color="#a8daf9" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g class="atlas-grid">
+          {Array.from({length:12},(_,i)=><path d={ 'M '+(72+i*52)+' 0 V560' }/>)}
+          {Array.from({length:10},(_,i)=><path d={ 'M 0 '+(46+i*52)+' H720' }/>)}
+        </g>
+        <circle class="atlas-guide" cx="360" cy="270" r="206"/>
+        <circle class="atlas-guide" cx="360" cy="270" r="145"/>
+        <circle class="atlas-guide" cx="360" cy="270" r="76"/>
+        <!-- Symbolic illustrations; these are NOT representations of research results. -->
+        <g class="atlas-scene is-active" data-atlas-scene="0">
+          <g class="atlas-connections">
+            <path d="M170 288 L274 157 L390 203 L517 140 L567 295 L447 400 L289 417 L170 288 L390 203 L447 400 L274 157 L567 295 L289 417 L517 140"/>
+            <path d="M170 288 L289 417 M274 157 L447 400 M390 203 L567 295"/>
+          </g>
+          {[[170,288,8],[274,157,10],[390,203,15],[517,140,8],[567,295,9],[447,400,12],[289,417,7]].map(([x,y,r],i) =>
+            <g class="atlas-dot" style={'--delay:'+(i*.26)+'s'}>
+              <circle cx={x} cy={y} r={r*3} class="atlas-dot__halo"/>
+              <circle cx={x} cy={y} r={r} class="atlas-dot__core"/>
+            </g>
+          )}
+        </g>
+        <g class="atlas-scene" data-atlas-scene="1">
+          <g class="atlas-architecture">
+            {[[180,150],[360,150],[540,150],[180,355],[360,355],[540,355]].map(([x,y],i) =>
+              <g><rect x={x-60} y={y-42} width="120" height="84" rx="9" class="atlas-unit"/><rect x={x-41} y={y-23} width="82" height="46" rx="3" class="atlas-unit__core"/><text x={x} y={y+64} text-anchor="middle" class="atlas-unit__label">{String(i+1).padStart(2,'0')}</text></g>
+            )}
+            <path class="atlas-trace" d="M240 150 H300 M420 150 H480 M180 192 V313 M360 192 V313 M540 192 V313 M240 355 H300 M420 355 H480 M360 192 V275 H540"/>
+          </g>
+        </g>
+        <g class="atlas-scene" data-atlas-scene="2">
+          <g class="atlas-concentric">
+            {[210,173,138,103,67].map((radius,i)=><rect x={360-radius} y={275-radius} width={radius*2} height={radius*2} rx={Math.max(14,radius*.16)} class="atlas-concentric__square" style={'--delay:'+(i*.21)+'s'}/>)}
+            <circle cx="360" cy="275" r="18" fill="url(#atlas-node)" />
+            {[[173,275],[547,275],[360,88],[360,462]].map(([x,y])=><circle cx={x} cy={y} r="4" fill="#A8DAF9"/>)}
+          </g>
+        </g>
+        <g class="atlas-scene" data-atlas-scene="3">
+          <g class="atlas-multimodal">
+            <path class="atlas-signal atlas-signal--one" d="M94 160 C140 160 140 90 185 160 S270 230 315 160 S402 90 449 160 S536 230 580 160 H632"/>
+            <path class="atlas-signal atlas-signal--two" d="M94 270 C142 270 142 220 190 270 S280 320 330 270 S415 220 463 270 S555 320 632 270"/>
+            <path class="atlas-signal atlas-signal--three" d="M94 383 C145 383 145 317 196 383 S295 449 347 383 S440 317 493 383 S577 449 632 383"/>
+            <rect x="297" y="215" width="126" height="110" rx="17" class="atlas-signal__hub"/>
+            <circle cx="360" cy="270" r="20" fill="url(#atlas-node)" />
+          </g>
+        </g>
+        <g class="atlas-scene" data-atlas-scene="4">
+          <g class="atlas-interface">
+            <rect x="153" y="105" width="414" height="325" rx="18" class="atlas-interface__window"/>
+            <path d="M153 162 H567" class="atlas-interface__rule"/>
+            <circle cx="184" cy="134" r="6" class="atlas-interface__node"/><circle cx="207" cy="134" r="6" class="atlas-interface__node"/>
+            <rect x="181" y="195" width="149" height="12" rx="6" class="atlas-interface__placeholder"/>
+            <rect x="181" y="221" width="210" height="7" rx="3" class="atlas-interface__placeholder" opacity=".43"/>
+            <rect x="181" y="241" width="175" height="7" rx="3" class="atlas-interface__placeholder" opacity=".35"/>
+            <rect x="181" y="300" width="139" height="51" rx="8" class="atlas-interface__button"/>
+            <path d="M431 250 L478 361 L491 320 L539 319 Z" class="atlas-interface__cursor"/>
+            <circle cx="477" cy="347" r="40" class="atlas-interface__cursor-ring"/>
+          </g>
+        </g>
+        <g class="atlas-scene" data-atlas-scene="5">
+          <g class="atlas-hardware">
+            <rect x="164" y="103" width="392" height="340" rx="15" class="atlas-hardware__board"/>
+            <path class="atlas-trace" d="M164 164 H247 L290 210 H367 L430 146 H556 M178 393 H295 L331 347 H451 L491 386 H556 M222 103 V230 L268 276 H454 L500 321 V443"/>
+            <path class="atlas-trace" d="M164 294 H257 L311 238 H390 L458 190 H556"/>
+            <rect x="290" y="228" width="140" height="96" rx="9" class="atlas-hardware__chip"/>
+            {[[247,164],[430,146],[295,393],[500,321],[268,276],[458,190]].map(([x,y],i)=>
+              <g class="atlas-dot" style={'--delay:'+(i*.24)+'s'}><circle cx={x} cy={y} r="15" class="atlas-dot__halo"/><circle cx={x} cy={y} r="5" class="atlas-dot__core"/></g>
+            )}
+          </g>
+        </g>
+      </svg>
+      <div class="research-atlas__crosshair research-atlas__crosshair--a"></div>
+      <div class="research-atlas__crosshair research-atlas__crosshair--b"></div>
+    </div>
+    <div class="research-atlas__caption">
+      <span class="research-atlas__caption-kicker">PUBLIC RESEARCH INTERESTS / <span data-atlas-counter>01</span> OF 06</span>
+      <p class="research-atlas__caption-description" data-atlas-description>{researchAreas[0].detail}</p>
+      <span class="research-atlas__caption-note">CONCEPTUAL VISUALIZATION · NOT RESEARCH DATA</span>
+    </div>
+  </div>
+</div>

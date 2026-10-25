@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { setupResearchAtlases } from './research-atlas';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -100,6 +101,10 @@ function setupContentMotion(): void {
       scrollTrigger: { trigger: element, start: 'top 94%', once: true },
     });
   });
+  document.querySelectorAll<HTMLElement>('.research-atlas').forEach(atlas => {
+    const visual = atlas.querySelector<HTMLElement>('.research-atlas__visual');
+    if (visual) gsap.from(visual, { scale: .94, y: 28, duration: 1.18, ease: 'power2.out', scrollTrigger: { trigger: atlas, start: 'top 92%', once: true } });
+  });
   document.querySelectorAll<HTMLElement>('.project-card').forEach(card => {
     card.addEventListener('pointermove', event => {
       if (event.pointerType === 'touch') return;
@@ -172,6 +177,7 @@ function setupFinale(): void {
 
 setupMenu();
 setupScenePausing();
+setupResearchAtlases();
 if (!reducedMotion) gsap.registerPlugin(ScrollTrigger);
 setupIntroduction();
 setupHero();

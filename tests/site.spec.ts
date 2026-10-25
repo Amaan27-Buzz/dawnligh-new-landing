@@ -125,3 +125,18 @@ test('reduced motion skips opening and retains the final composite', async ({ pa
   await expect(page.locator('.closing__final')).toHaveCSS('opacity', '1');
   await expect(page.locator('.closing__name')).toHaveCSS('opacity', '1');
 });
+
+
+test('research atlas switches fields, descriptive copy and distinct diagrams', async ({ page }) => {
+  await page.goto('/research');
+  const atlas = page.locator('[data-research-atlas]');
+  const choices = atlas.locator('button[data-atlas-trigger]');
+  await expect(choices).toHaveCount(6);
+  await expect(choices.nth(0)).toHaveAttribute('aria-pressed', 'true');
+  await choices.nth(5).click();
+  await expect(choices.nth(5)).toHaveAttribute('aria-pressed', 'true');
+  await expect(choices.nth(0)).toHaveAttribute('aria-pressed', 'false');
+  await expect(atlas.locator('[data-atlas-scene="5"]')).toHaveClass(/is-active/);
+  await expect(atlas.locator('[data-atlas-description]')).toContainText('electronics');
+  await expect(atlas.locator('[data-atlas-counter]')).toHaveText('06');
+});

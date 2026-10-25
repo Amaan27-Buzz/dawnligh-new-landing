@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { researchAreas, approvedPrograms } from '../data/research';
+import { approvedPrograms } from '../data/research';
+import ResearchAtlas from '../components/ResearchAtlas.astro';
 ---
 <SiteLayout path="/research" title="Research — Dawnlight Labs" description="The public research interests and principles guiding Dawnlight Labs.">
   <section class="page-hero shell" aria-labelledby="research-title">
@@ -11,13 +12,7 @@ import { researchAreas, approvedPrograms } from '../data/research';
   <section class="section" id="areas" aria-labelledby="research-areas">
     <div class="shell">
       <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">01 / Fields of investigation</span><h2 id="research-areas">Questions we're interested in.</h2></div></div>
-      <div class="research-areas">
-        {researchAreas.map((area) => <article class="research-area js-reveal">
-          <span class="area-number">{area.number}</span>
-          <h2>{area.title}</h2>
-          <p>{area.detail}</p>
-        </article>)}
-      </div>
+      <ResearchAtlas variant="full"/>
     </div>
   </section>
   {approvedPrograms.length > 0 && <section class="section" id="programs" aria-labelledby="programs-title">

@@ -27,6 +27,11 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.13, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'test-results/motion-capture/05-exact-final-mark.png' });
+  await page.goto('/research');
+  await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/06-research-atlas.png' });
+  await page.locator('[data-atlas-trigger="3"]').click();
+  await page.waitForTimeout(700);
+  await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/07-research-multimodal.png' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });

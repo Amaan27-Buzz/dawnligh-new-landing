@@ -5,7 +5,7 @@ import IntroSequence from '../components/IntroSequence.astro';
 import SectionIntro from '../components/SectionIntro.astro';
 import ProjectGallery from '../components/ProjectGallery.astro';
 import SunClosing from '../components/SunClosing.astro';
-import { researchAreas } from '../data/research';
+import ResearchAtlas from '../components/ResearchAtlas.astro';
 ---
 <SiteLayout title="Dawnlight Labs — Technology built around people." path="/">
   <IntroSequence/>
@@ -34,9 +34,7 @@ import { researchAreas } from '../data/research';
         </div>
         <a class="text-link" href="/research">Our research <span aria-hidden="true">↗</span></a>
       </div>
-      <div class="research-summary-grid">
-        {researchAreas.map((area) => <a href="/research#areas" class="area"><span class="area-number">{area.number}</span><h3 class="area-title">{area.title}</h3></a>)}
-      </div>
+      <ResearchAtlas/>
     </div>
   </section>
   <section class="projects-section" aria-labelledby="home-projects">
