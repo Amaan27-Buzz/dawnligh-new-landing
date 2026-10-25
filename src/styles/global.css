@@ -526,3 +526,8 @@ html{scroll-behavior:auto}
   opacity:0;transition:opacity .4s;
 }
 .project-card:hover::before,.project-card:focus-visible::before{opacity:1}
+
+/* A blue-only derivative of the exact master makes the rim reveal legible:
+   the final lit layer remains the unmodified brand SVG. */
+.intro-sequence__base { filter:brightness(.80) saturate(1.07); }
+.intro-sequence__arc { mix-blend-mode:screen; filter:drop-shadow(0 0 18px #87d0ff) brightness(1.55); }
