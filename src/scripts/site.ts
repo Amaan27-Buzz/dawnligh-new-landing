@@ -148,14 +148,17 @@ function setupFinale(): void {
   const name = closing.querySelector<HTMLElement>('.closing__name');
   if (!frame || !stage || !sun || !behind || !traveler || !composite || !orbitTrack || !dawn || !name) return;
 
-  // Both traveling images have the same dimensions and destination as the
-  // orb within the original supplied 582px sun+orb SVG. The rear image
-  // passes behind the standalone yellow sun; the second passes in front.
-  const width = () => stage.getBoundingClientRect().width || 520;
-  const pose = { x: -.209, y: -.115, scale: .66, rotation: -35 };
+  // Orb coordinates are offsets from its exact destination in the original
+  // 582x582 artwork. Both images use that destination in CSS. Keep the two
+  // passes in sync so the depth swap doesn't move or resize the orb.
+  const stageWidth = () => stage.getBoundingClientRect().width || 520;
+  // Entirely inside the solar disc at the beginning (not above the sun).
+  const pose = { x: -.22, y: -.14, scale: .69, rotation: -22 };
   const place = () => gsap.set([behind, traveler], {
-    x: pose.x * width(), y: pose.y * width(),
-    scale: pose.scale, rotation: pose.rotation,
+    x: pose.x * stageWidth(),
+    y: pose.y * stageWidth(),
+    scale: pose.scale,
+    rotation: pose.rotation,
   });
   gsap.set(composite, { opacity: 0 });
   gsap.set(sun, { opacity: 0, scale: .62, y: 55 });
@@ -166,6 +169,10 @@ function setupFinale(): void {
   gsap.set(name, { opacity: 0, y: 38 });
   place();
 
+  // The physical journey is below, not above, the sun:
+  // hidden at its center-left -> peeks out on its left edge -> runs behind
+  // the lower rim -> emerges at the lower-right -> returns to the exact
+  // final composition. The back/front images share the same transform.
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: closing, start: 'top top',
@@ -175,26 +182,28 @@ function setupFinale(): void {
     },
     defaults: { ease: 'sine.inOut' },
   });
+
   tl.to(dawn, { opacity: .93, duration: .28 }, 0)
     .to(sun, { opacity: 1, scale: 1, y: 0, duration: .23 }, .02)
-    .to(orbitTrack, { opacity: .54, scale: 1, duration: .22 }, .12)
-    .to(orbitTrack, { rotation: 158, duration: .83, ease: 'none' }, .25)
-    // The orb is inside the sun's silhouette, physically behind its layer.
-    .to(behind, { opacity: 1, duration: .08 }, .26)
-    // It emerges above the upper-left solar rim.
-    .to(pose, { x: -.37, y: -.51, scale: .82, rotation: -45, duration: .24, onUpdate: place }, .28)
-    .to(pose, { x: -.10, y: -.65, scale: .94, rotation: -14, duration: .25, onUpdate: place }, .52)
-    // Cross from the rear layer to the foreground as it clears the top.
-    .to(traveler, { opacity: 1, duration: .08 }, .73)
-    .to(behind, { opacity: 0, duration: .08 }, .73)
-    // Sweep right, then down to the precise master logo position.
-    .to(pose, { x: .19, y: -.41, scale: .99, rotation: 22, duration: .30, onUpdate: place }, .77)
-    .to(pose, { x: 0, y: 0, scale: 1, rotation: 0, duration: .28, onUpdate: place }, 1.07)
-    .to(name, { opacity: 1, y: 0, duration: .28 }, 1.16)
-    // The final frame is the unmodified original SVG, never a recreation.
-    .to(composite, { opacity: 1, duration: .11 }, 1.38)
-    .to([behind, traveler, sun, orbitTrack], { opacity: 0, duration: .11 }, 1.38)
-    .to({}, { duration: .40 }, 1.53);
+    .to(orbitTrack, { opacity: .36, scale: 1, duration: .22 }, .12)
+    .to(orbitTrack, { rotation: -125, duration: 1.03, ease: 'none' }, .25)
+    // Starts fully concealed by the yellow disc (behind = z1, sun = z2).
+    .to(behind, { opacity: 1, duration: .08 }, .25)
+    // Arc from the rear-left, then BELOW the solar rim. No top-right drop.
+    .to(pose, { x: -.43, y: .01, scale: .78, rotation: -23, duration: .24, onUpdate: place }, .28)
+    .to(pose, { x: -.35, y: .22, scale: .83, rotation: -16, duration: .25, onUpdate: place }, .52)
+    .to(pose, { x: -.06, y: .34, scale: .87, rotation: -3, duration: .29, onUpdate: place }, .77)
+    // Only change depth once the orb has rounded the lower solar edge.
+    .to(traveler, { opacity: 1, duration: .08 }, 1.03)
+    .to(behind, { opacity: 0, duration: .08 }, 1.03)
+    .to(pose, { x: .20, y: .22, scale: .95, rotation: 11, duration: .26, onUpdate: place }, 1.06)
+    .to(pose, { x: .12, y: .10, scale: .98, rotation: 6, duration: .19, onUpdate: place }, 1.32)
+    // Resolve to exactly x=0,y=0,rotation=0,scale=1 before the master swap.
+    .to(pose, { x: 0, y: 0, scale: 1, rotation: 0, duration: .23, onUpdate: place }, 1.51)
+    .to(name, { opacity: 1, y: 0, duration: .26 }, 1.51)
+    .to(composite, { opacity: 1, duration: .11 }, 1.75)
+    .to([behind, traveler, sun, orbitTrack], { opacity: 0, duration: .11 }, 1.75)
+    .to({}, { duration: .45 }, 1.9);
 
   const inFinale = () => document.documentElement.classList.add('finale-active');
   const outFinale = () => document.documentElement.classList.remove('finale-active');

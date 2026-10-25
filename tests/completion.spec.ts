@@ -173,3 +173,46 @@ test('home finale starts blue orb behind sun, transitions forward, and resolves 
   await expect.poll(()=>final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
   await expect(final).toHaveAttribute('src',/dawnlight%20with%20sun%20svg.svg/);
 });
+
+test('home finale orbits below the sun before arriving at lower right', async ({ page }) => {
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toHaveCount(0,{timeout:8000});
+  const sun = page.locator('.closing__sun-disc');
+  const rear = page.locator('.closing__traveler--behind');
+  const front = page.locator('.closing__traveler:not(.closing__traveler--behind)');
+  const finished = page.locator('.closing__final');
+  const at = await page.locator('[data-closing]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+  const sampleAt = async (progress: number) => {
+    await page.evaluate(([y,p])=>scrollTo({top:y+innerHeight*p,behavior:'instant'}),[at,progress]);
+    await page.waitForTimeout(700);
+    return page.evaluate(() => {
+      const stage=document.querySelector('.closing__stage')!.getBoundingClientRect();
+      const rear=document.querySelector('.closing__traveler--behind')!.getBoundingClientRect();
+      const front=document.querySelector('.closing__traveler:not(.closing__traveler--behind)')!.getBoundingClientRect();
+      const opacity=(selector:string)=>Number.parseFloat(getComputedStyle(document.querySelector(selector)!).opacity);
+      return {
+        yellowTop: stage.top + stage.width * (72/582),
+        sunCenterY: stage.top + stage.width * (314/582),
+        sunCenterX: stage.left + stage.width * (291/582),
+        rearTop: rear.top, rearCenterY: rear.top+rear.height/2,
+        frontTop: front.top, frontCenterX: front.left+front.width/2,
+        frontCenterY: front.top+front.height/2,
+        rearOpacity:opacity('.closing__traveler--behind'),
+        frontOpacity:opacity('.closing__traveler:not(.closing__traveler--behind)'),
+        finalOpacity:opacity('.closing__final'),
+      };
+    });
+  };
+  const rearLeft=await sampleAt(.54);
+  expect(rearLeft.rearOpacity).toBeGreaterThan(.4);
+  // A top-right pass used to put the orb ABOVE the solar disc at this stage.
+  expect(rearLeft.rearTop).toBeGreaterThan(rearLeft.yellowTop-12);
+  const bottom=await sampleAt(.78);
+  expect(bottom.rearCenterY).toBeGreaterThan(bottom.sunCenterY);
+  const lowerRight=await sampleAt(1.10);
+  expect(lowerRight.frontOpacity).toBeGreaterThan(.35);
+  expect(lowerRight.frontCenterY).toBeGreaterThan(lowerRight.sunCenterY);
+  await sampleAt(1.68);
+  await expect.poll(()=>finished.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
+});

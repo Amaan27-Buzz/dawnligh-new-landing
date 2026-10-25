@@ -14,17 +14,17 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   // which can land after the pinned animation has already completed.
   const closingTop = await page.locator('[data-closing]').evaluate(element =>
     element.getBoundingClientRect().top + window.scrollY);
-  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * .36, behavior: 'instant' }), closingTop);
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * .58, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(1150);
   const travelerOpacity = await page.locator('.closing__traveler--behind').evaluate(element =>
     parseFloat(getComputedStyle(element).opacity));
   expect(travelerOpacity, 'Orb should be visible while orbiting').toBeGreaterThan(.08);
   await page.screenshot({ path: 'test-results/motion-capture/04-orbit-in-progress.png' });
-  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.00, behavior: 'instant' }), closingTop);
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.08, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(800);
   await page.screenshot({ path: 'test-results/motion-capture/04b-orbit-later.png' });
   // Pause inside the pinned hold, before the footer pushes the finale offscreen.
-  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.49, behavior: 'instant' }), closingTop);
+  await page.evaluate(y => window.scrollTo({ top: y + window.innerHeight * 1.68, behavior: 'instant' }), closingTop);
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'test-results/motion-capture/05-exact-final-mark.png' });
   await page.goto('/research');
