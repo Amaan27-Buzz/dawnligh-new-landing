@@ -140,58 +140,70 @@ function setupFinale(): void {
   const frame = closing.querySelector<HTMLElement>('.closing__frame');
   const stage = closing.querySelector<HTMLElement>('.closing__stage');
   const sun = closing.querySelector<HTMLElement>('.closing__sun-disc');
-  const traveler = closing.querySelector<HTMLElement>('.closing__traveler');
+  const behind = closing.querySelector<HTMLElement>('.closing__traveler--behind');
+  const traveler = closing.querySelector<HTMLElement>('.closing__traveler:not(.closing__traveler--behind)');
   const composite = closing.querySelector<HTMLElement>('.closing__final');
   const orbitTrack = closing.querySelector<HTMLElement>('.closing__orbit-track');
   const dawn = closing.querySelector<HTMLElement>('.closing__dawn');
   const name = closing.querySelector<HTMLElement>('.closing__name');
-  if (!frame || !stage || !sun || !traveler || !composite || !orbitTrack || !dawn || !name) return;
+  if (!frame || !stage || !sun || !behind || !traveler || !composite || !orbitTrack || !dawn || !name) return;
 
-  const w = () => stage.getBoundingClientRect().width || 520;
+  // Both traveling images have the same dimensions and destination as the
+  // orb within the original supplied 582px sun+orb SVG. The rear image
+  // passes behind the standalone yellow sun; the second passes in front.
+  const width = () => stage.getBoundingClientRect().width || 520;
+  const pose = { x: -.209, y: -.115, scale: .66, rotation: -35 };
+  const place = () => gsap.set([behind, traveler], {
+    x: pose.x * width(), y: pose.y * width(),
+    scale: pose.scale, rotation: pose.rotation,
+  });
   gsap.set(composite, { opacity: 0 });
-  gsap.set(sun, { opacity: 0, scale: .6, y: 55 });
-  gsap.set(traveler, { opacity: 0, scale: .62, x: -w() * .46, y: -w() * .51 });
-  gsap.set(orbitTrack, { opacity: 0, scale: .74 });
+  gsap.set(sun, { opacity: 0, scale: .62, y: 55 });
+  gsap.set(behind, { opacity: 0 });
+  gsap.set(traveler, { opacity: 0 });
+  gsap.set(orbitTrack, { opacity: 0, scale: .72 });
   gsap.set(dawn, { opacity: 0 });
-  gsap.set(name, { opacity: 0, y: 44 });
+  gsap.set(name, { opacity: 0, y: 38 });
+  place();
 
-  // Each position is relative to the exact destination in the
-  // original combined 582px SVG: orb x=267.923, y=236.396, w=290.
-  // On the final frame we swap to that unmodified combined SVG.
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: closing, start: 'top top',
-      end: () => '+=' + Math.max(760, Math.round(window.innerHeight * 1.30)),
+      end: () => '+=' + Math.max(1080, Math.round(window.innerHeight * 1.8)),
       pin: frame, pinSpacing: true, anticipatePin: 1,
-      scrub: .65, invalidateOnRefresh: true,
+      scrub: .75, invalidateOnRefresh: true,
     },
     defaults: { ease: 'sine.inOut' },
   });
-  tl.to(dawn, { opacity: .95, duration: .28 }, 0)
-    .to(sun, { opacity: 1, scale: 1, y: 0, duration: .29 }, .03)
-    .to(orbitTrack, { opacity: .8, scale: 1, duration: .20 }, .12)
-    .to(orbitTrack, { rotation: 160, duration: .7, ease: 'none' }, .19)
-    .to(traveler, { opacity: 1, duration: .14 }, .19)
-    .to(traveler, { x: () => -w() * .15, y: () => -w() * .55, scale: .75, rotation: -13, duration: .22 }, .21)
-    .to(traveler, { x: () => w() * .18, y: () => -w() * .31, scale: .84, rotation: 19, duration: .22 }, .43)
-    .to(traveler, { x: () => w() * .20, y: () => -w() * .015, scale: .96, rotation: 13, duration: .16 }, .65)
-    .to(traveler, { x: 0, y: 0, scale: 1, rotation: 0, duration: .14 }, .81)
-    .to(name, { opacity: 1, y: 0, duration: .26 }, .74)
-    .to(composite, { opacity: 1, duration: .10 }, .91)
-    .to([sun, traveler, orbitTrack], { opacity: 0, duration: .10 }, .91)
-    // Hold the exact completed artwork long enough to actually see it.
-    .to({}, { duration: .45 }, 1.03);
+  tl.to(dawn, { opacity: .93, duration: .28 }, 0)
+    .to(sun, { opacity: 1, scale: 1, y: 0, duration: .23 }, .02)
+    .to(orbitTrack, { opacity: .54, scale: 1, duration: .22 }, .12)
+    .to(orbitTrack, { rotation: 158, duration: .83, ease: 'none' }, .25)
+    // The orb is inside the sun's silhouette, physically behind its layer.
+    .to(behind, { opacity: 1, duration: .08 }, .26)
+    // It emerges above the upper-left solar rim.
+    .to(pose, { x: -.37, y: -.51, scale: .82, rotation: -45, duration: .24, onUpdate: place }, .28)
+    .to(pose, { x: -.10, y: -.65, scale: .94, rotation: -14, duration: .25, onUpdate: place }, .52)
+    // Cross from the rear layer to the foreground as it clears the top.
+    .to(traveler, { opacity: 1, duration: .08 }, .73)
+    .to(behind, { opacity: 0, duration: .08 }, .73)
+    // Sweep right, then down to the precise master logo position.
+    .to(pose, { x: .19, y: -.41, scale: .99, rotation: 22, duration: .30, onUpdate: place }, .77)
+    .to(pose, { x: 0, y: 0, scale: 1, rotation: 0, duration: .28, onUpdate: place }, 1.07)
+    .to(name, { opacity: 1, y: 0, duration: .28 }, 1.16)
+    // The final frame is the unmodified original SVG, never a recreation.
+    .to(composite, { opacity: 1, duration: .11 }, 1.38)
+    .to([behind, traveler, sun, orbitTrack], { opacity: 0, duration: .11 }, 1.38)
+    .to({}, { duration: .40 }, 1.53);
+
   const inFinale = () => document.documentElement.classList.add('finale-active');
   const outFinale = () => document.documentElement.classList.remove('finale-active');
   ScrollTrigger.create({
-    trigger: closing,
-    start: 'top top',
-    end: 'bottom top',
-    onEnter: inFinale,
-    onEnterBack: inFinale,
-    onLeave: outFinale,
-    onLeaveBack: outFinale,
+    trigger: closing, start: 'top top', end: 'bottom top',
+    onEnter: inFinale, onEnterBack: inFinale,
+    onLeave: outFinale, onLeaveBack: outFinale,
   });
+  window.addEventListener('resize', place, { passive: true });
 }
 
 setupMenu();
