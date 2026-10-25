@@ -140,3 +140,14 @@ test('research atlas switches fields, descriptive copy and distinct diagrams', a
   await expect(atlas.locator('[data-atlas-description]')).toContainText('electronics');
   await expect(atlas.locator('[data-atlas-counter]')).toHaveText('06');
 });
+
+
+test('project gallery reacts to pointer movement without moving the text labels', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
+  const card = page.locator('.project-card--oscar');
+  await card.scrollIntoViewIfNeeded();
+  await card.hover({ position: { x: 140, y: 140 } });
+  await expect.poll(() => card.evaluate(el => (el as HTMLElement).style.getPropertyValue('--mx'))).not.toBe('');
+  await expect(card.getByRole('heading', { name: 'OSCAR' })).toBeVisible();
+});

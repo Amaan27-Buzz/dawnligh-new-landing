@@ -106,12 +106,29 @@ function setupContentMotion(): void {
     if (visual) gsap.from(visual, { scale: .94, y: 28, duration: 1.18, ease: 'power2.out', scrollTrigger: { trigger: atlas, start: 'top 92%', once: true } });
   });
   document.querySelectorAll<HTMLElement>('.project-card').forEach(card => {
+    const artwork = card.querySelector<HTMLElement>('.project-card__art');
+    const scene = card.querySelector<HTMLElement>('.art');
+    if (artwork) {
+      // Artwork continuously settles into place as the card crosses the viewport.
+      // Content, labels and click targets remain completely stationary.
+      gsap.fromTo(artwork,
+        { scale: 1.14 },
+        { scale: 1, ease: 'none',
+          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: .85 } }
+      );
+    }
     card.addEventListener('pointermove', event => {
       if (event.pointerType === 'touch') return;
       const bounds = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((event.clientX - bounds.left) / bounds.width * 100).toFixed(2) + '%');
-      card.style.setProperty('--my', ((event.clientY - bounds.top) / bounds.height * 100).toFixed(2) + '%');
+      const x = (event.clientX - bounds.left) / bounds.width - .5;
+      const y = (event.clientY - bounds.top) / bounds.height - .5;
+      card.style.setProperty('--mx', ((x+.5)*100).toFixed(2) + '%');
+      card.style.setProperty('--my', ((y+.5)*100).toFixed(2) + '%');
+      if (scene) gsap.to(scene, { x: x * 13, y: y * 13, duration: .75, ease:'power2.out', overwrite: 'auto' });
     }, { passive: true });
+    card.addEventListener('pointerleave', () => {
+      if (scene) gsap.to(scene, { x: 0, y: 0, duration: .9, ease: 'power2.out', overwrite: 'auto' });
+    });
   });
 }
 

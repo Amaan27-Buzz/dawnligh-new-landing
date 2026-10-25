@@ -32,7 +32,10 @@ test('render opening and closing frames for visual review', async ({ page }) => 
   await page.locator('[data-atlas-trigger="3"]').click();
   await page.waitForTimeout(700);
   await page.locator('[data-research-atlas]').screenshot({ path: 'test-results/motion-capture/07-research-multimodal.png' });
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
+  await page.locator('.project-grid').first().screenshot({ path: 'test-results/motion-capture/08-cinematic-project-gallery.png' });
+    await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
   await page.screenshot({ path: 'test-results/motion-capture/06-mobile-hero.png' });

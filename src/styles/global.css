@@ -659,3 +659,17 @@ html.finale-active .site-header {
  .atlas-scene{transition:none!important}
  .research-atlas__field{transition:none!important}
 }
+
+/* Gallery artwork moves independently of stationary titles and links. */
+.project-card__art {transform-origin:center center;will-change:transform}
+.project-card__art>.art {will-change:transform}
+.project-card__art::after {content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+ background:linear-gradient(to bottom,transparent 48%,rgba(6,19,31,.09) 82%,rgba(6,19,31,.20));
+ opacity:.7;}
+.project-card--takokit .project-card__art::after,
+.project-card--kinetable .project-card__art::after {
+ background:linear-gradient(to bottom,transparent 50%,rgba(236,243,234,.08) 80%,rgba(195,211,196,.21));
+}
+@media(prefers-reduced-motion:reduce) {
+ .project-card__art,.project-card__art>.art{will-change:auto}
+}
