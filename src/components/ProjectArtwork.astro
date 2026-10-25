@@ -1,0 +1,44 @@
+---
+const { kind } = Astro.props;
+---
+<div class={'art art--' + kind} aria-hidden="true">
+  {kind === 'oscar' && <div class="oscar-scene">
+    <span class="oscar-ring oscar-ring--one"></span><span class="oscar-ring oscar-ring--two"></span><span class="oscar-ring oscar-ring--three"></span>
+    <span class="oscar-connection oc-one"></span><span class="oscar-connection oc-two"></span><span class="oscar-connection oc-three"></span>
+    <span class="oscar-node on-one">◇</span><span class="oscar-node on-two">⌘</span><span class="oscar-node on-three">↗</span>
+    <span class="oscar-core"><span></span></span>
+  </div>}
+  {kind === 'takokit' && <div class="tako-scene">
+    <div class="tako-grid"></div>
+    <svg class="tako-wave" viewBox="0 0 720 240" preserveAspectRatio="none" role="presentation">
+      <path class="tako-wave--back" d="M0 115 C65 112 65 83 115 119 S188 176 244 107 S324 40 366 129 S430 178 471 82 S565 168 610 113 S680 99 720 115"/>
+      <path class="tako-wave--main" d="M0 120 C65 120 78 111 115 124 S190 182 244 105 S325 48 366 137 S430 185 471 82 S558 162 610 118 S670 106 720 120"/>
+    </svg>
+    <div class="tako-scale"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <span class="tako-pulse"></span>
+  </div>}
+  {kind === 'kinetable' && <div class="kine-scene">
+    <div class="kine-board">
+      <svg viewBox="0 0 590 305" preserveAspectRatio="xMidYMid meet" role="presentation">
+        <defs>
+          <pattern id="pcb-lines" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0 H0 V25" fill="none" stroke="#8bb49c" stroke-width=".5" opacity=".38"/></pattern>
+        </defs>
+        <rect width="590" height="305" fill="url(#pcb-lines)"/>
+        <path class="pcb-trace" d="M0 66 L90 66 L130 105 H230 L292 45 H455 L590 45 M10 220 H145 L202 180 H354 L425 235 H590 M45 5 V80 L130 145 H295 L366 90 H590"/>
+        <path class="pcb-trace pcb-trace--dim" d="M40 290 V260 H190 L238 215 H345 M590 170 H420 L368 148 H270 L215 205 H70"/>
+        <g class="pcb-sparks"><circle cx="130" cy="145" r="10"/><circle cx="292" cy="45" r="10"/><circle cx="425" cy="235" r="10"/><circle cx="368" cy="148" r="10"/></g>
+        <g class="pcb-centers"><circle cx="130" cy="145" r="28"/><circle cx="292" cy="45" r="28"/><circle cx="425" cy="235" r="28"/><circle cx="368" cy="148" r="28"/></g>
+      </svg>
+    </div>
+  </div>}
+  {kind === 'aish' && <div class="aish-scene">
+    <div class="aish-terminal">
+      <div class="aish-titlebar"><i></i><i></i><i></i></div>
+      <div class="aish-command"><span>›</span> <span class="aish-command__text">aish</span><span class="aish-cursor"></span></div>
+      <div class="aish-preview">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="aish-approval">Preview only · no command executed</span>
+    </div>
+  </div>}
+</div>

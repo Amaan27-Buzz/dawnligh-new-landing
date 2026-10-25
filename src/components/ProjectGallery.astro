@@ -1,0 +1,18 @@
+---
+import ProjectArtwork from './ProjectArtwork.astro';
+import { projects } from '../data/projects';
+---
+<div class="project-grid" aria-label="Selected projects">
+  {projects.map((project) => (
+    <a class={'project-card project-card--' + project.slug + ' js-reveal'} href={'/projects/' + project.slug} aria-label={'Explore ' + project.name + ' — ' + project.type}>
+      <div class="project-card__art"><ProjectArtwork kind={project.art}/></div>
+      <div class="project-card__bottom">
+        <div class="project-card__copy">
+          <p class="project-card__type">{project.type}</p>
+          <h3 class="project-card__name">{project.name}</h3>
+        </div>
+        <span class="project-card__arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
+  ))}
+</div>

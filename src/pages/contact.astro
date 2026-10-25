@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { brand } from '../data/brand';
+---
+<SiteLayout path="/contact" title="Contact — Dawnlight Labs" description="Contact Dawnlight Labs in India.">
+  <section class="contact-page">
+    <div class="shell contact-layout" style="width:100%">
+      <div>
+        <span class="eyebrow">Dawnlight / Contact</span>
+        <h1>Let's talk.</h1>
+        <p style="font-size:19px;max-width:36ch;margin-top:25px">Questions, ideas or potential collaborations? Get in touch.</p>
+        <a class="contact-link" href={'mailto:' + brand.email}>{brand.email} ↗</a>
+        <div class="contact-country">India</div>
+      </div>
+      <div class="contact-visual" aria-hidden="true"><img src={brand.orb} alt="" width="290" height="289"/></div>
+    </div>
+  </section>
+</SiteLayout>

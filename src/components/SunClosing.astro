@@ -1,0 +1,12 @@
+---
+import { brand } from '../data/brand';
+---
+<section class="closing" data-closing aria-label="Dawnlight identity">
+  <div class="closing__stage" aria-hidden="true">
+    <span class="closing__sunlight"></span>
+    <span class="closing__orbit"><img src={brand.orb} alt="" loading="lazy" width="138" height="138"/></span>
+    <img class="closing__final" src={brand.sun} alt="" loading="lazy" width="582" height="582"/>
+  </div>
+  <div class="closing__name">DAWNLIGHT</div>
+  <a class="closing__contact" href={'mailto:' + brand.email}>Get in touch <span aria-hidden="true">↗</span></a>
+</section>

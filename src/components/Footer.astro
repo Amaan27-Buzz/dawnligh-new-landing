@@ -1,0 +1,16 @@
+---
+import { brand, navigation } from '../data/brand';
+---
+<footer class="site-footer">
+  <div class="shell footer-main">
+    <a class="footer-wordmark" href="/" aria-label="Dawnlight home"><img src={brand.orb} alt="" width="28" height="28"/> DAWNLIGHT</a>
+    <div class="footer-links">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+    </div>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© {new Date().getFullYear()} Dawnlight</span>
+    <span>India</span>
+    <a href={'mailto:' + brand.email}>{brand.email}</a>
+  </div>
+</footer>

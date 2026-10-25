@@ -1,0 +1,43 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { researchAreas, approvedPrograms } from '../data/research';
+---
+<SiteLayout path="/research" title="Research — Dawnlight Labs" description="The public research interests and principles guiding Dawnlight Labs.">
+  <section class="page-hero shell" aria-labelledby="research-title">
+    <span class="eyebrow">Dawnlight / Research</span>
+    <h1 id="research-title">Curiosity, with purpose.</h1>
+    <p>We explore how intelligence, computing and interaction can become more capable, efficient and useful.</p>
+  </section>
+  <section class="section" id="areas" aria-labelledby="research-areas">
+    <div class="shell">
+      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">01 / Fields of investigation</span><h2 id="research-areas">Questions we're interested in.</h2></div></div>
+      <div class="research-areas">
+        {researchAreas.map((area) => <article class="research-area js-reveal">
+          <span class="area-number">{area.number}</span>
+          <h2>{area.title}</h2>
+          <p>{area.detail}</p>
+        </article>)}
+      </div>
+    </div>
+  </section>
+  {approvedPrograms.length > 0 && <section class="section" id="programs" aria-labelledby="programs-title">
+    <div class="shell">
+      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">02 / Public research programs</span><h2 id="programs-title">Programs approved for public disclosure.</h2></div></div>
+      <div class="research-areas">{approvedPrograms.map((program) => <article class="research-area"><span class="area-number">{program.status}</span><h2>{program.title}</h2><p>{program.summary}</p></article>)}</div>
+    </div>
+  </section>}
+  <section class="section research-culture" aria-labelledby="culture-title">
+    <div class="shell">
+      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">02 / Research approach</span><h2 id="culture-title">Curiosity needs evidence.</h2></div></div>
+      <div class="research-culture-grid">
+        <article class="culture-item"><h3>Original questions.</h3><p>Explore what existing approaches leave unresolved, without assuming novelty guarantees a result.</p></article>
+        <article class="culture-item"><h3>Careful experiments.</h3><p>Understand baselines, constraints and limitations before claiming an improvement.</p></article>
+        <article class="culture-item"><h3>People in view.</h3><p>Consider efficiency, clarity, privacy and human control from the start.</p></article>
+      </div>
+    </div>
+  </section>
+  <section class="section"><div class="shell"><div class="about-two-col">
+    <div><span class="eyebrow">03 / Research communication</span><h2>Evidence before announcements.</h2></div>
+    <div><p>We will share research and technical writing when the work is ready and cleared for public release. Unpublished methods, experiments and potential intellectual property remain private.</p></div>
+  </div></div></section>
+</SiteLayout>

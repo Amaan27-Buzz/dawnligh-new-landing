@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
+---
+<SiteLayout path="/projects" title="Projects — Dawnlight Labs" description="Four projects exploring personal intelligence, electronics, voice runtimes and terminal interaction.">
+  <section class="page-hero shell page-hero--compact">
+    <span class="eyebrow">Dawnlight / Projects</span>
+    <h1>Selected projects.</h1>
+    <p>Technology we're building and exploring, each with a different problem in view.</p>
+  </section>
+  <section class="project-index"><div class="shell"><ProjectGallery/></div></section>
+</SiteLayout>
