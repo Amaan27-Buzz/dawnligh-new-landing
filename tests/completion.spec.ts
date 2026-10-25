@@ -153,8 +153,22 @@ test('home finale starts blue orb behind sun, transitions forward, and resolves 
   await page.evaluate(y=>scrollTo({top:y+innerHeight*.39,behavior:'instant'}),start);
   await expect.poll(()=>back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.25);
   expect(await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity))).toBeLessThan(.2);
-  await page.evaluate(y=>scrollTo({top:y+innerHeight*.94,behavior:'instant'}),start);
-  await expect.poll(()=>front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.5);
+  // Sample the full passage through the upper-right edge. GSAP's scrub
+  // intentionally eases toward the scroll position, so there is no single
+  // instantaneous scroll coordinate that represents the whole crossover.
+  const frontSamples: Array<{position:number,front:number,back:number,final:number}> = [];
+  for (const position of [.82,.91,1.0,1.09,1.18,1.27]) {
+    await page.evaluate(([y,f])=>scrollTo({top:y+innerHeight*f,behavior:'instant'}),[start,position]);
+    await page.waitForTimeout(440);
+    frontSamples.push({
+      position,
+      front: await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
+      back: await back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
+      final: await final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
+    });
+  }
+  console.log('Orb crossover samples:',JSON.stringify(frontSamples));
+  expect(Math.max(...frontSamples.map(s=>s.front)),'front orb must emerge during the orbit').toBeGreaterThan(.5);
   await page.evaluate(y=>scrollTo({top:y+innerHeight*1.5,behavior:'instant'}),start);
   await expect.poll(()=>final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
   await expect(final).toHaveAttribute('src',/dawnlight%20with%20sun%20svg.svg/);
