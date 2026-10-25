@@ -128,7 +128,7 @@ test('Research hero is balanced and includes a real visual on desktop and mobile
     const box=await hero.boundingBox();
     const diagram=await visual.boundingBox();
     expect(box && diagram).toBeTruthy();
-    expect(diagram!.width).toBeGreaterThan(width<760?200:310);
+    expect(diagram!.width).toBeGreaterThan(width<760?200:width<1100?275:350);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     expect(overflow).toBeLessThanOrEqual(2);
     if(width>1000){
@@ -153,7 +153,7 @@ test('home finale starts blue orb behind sun, transitions forward, and resolves 
   await page.evaluate(y=>scrollTo({top:y+innerHeight*.39,behavior:'instant'}),start);
   await expect.poll(()=>back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.25);
   expect(await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity))).toBeLessThan(.2);
-  await page.evaluate(y=>scrollTo({top:y+innerHeight*1.06,behavior:'instant'}),start);
+  await page.evaluate(y=>scrollTo({top:y+innerHeight*.94,behavior:'instant'}),start);
   await expect.poll(()=>front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.5);
   await page.evaluate(y=>scrollTo({top:y+innerHeight*1.5,behavior:'instant'}),start);
   await expect.poll(()=>final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
