@@ -1,12 +1,14 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import OrbHero from '../components/OrbHero.astro';
+import IntroSequence from '../components/IntroSequence.astro';
 import SectionIntro from '../components/SectionIntro.astro';
 import ProjectGallery from '../components/ProjectGallery.astro';
 import SunClosing from '../components/SunClosing.astro';
 import { researchAreas } from '../data/research';
 ---
 <SiteLayout title="Dawnlight Labs — Technology built around people." path="/">
+  <IntroSequence/>
   <section class="hero" aria-labelledby="hero-title">
     <div class="shell hero-layout">
       <div class="hero-content">

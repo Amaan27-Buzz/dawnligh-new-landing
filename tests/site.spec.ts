@@ -73,3 +73,55 @@ test('reduced-motion visitors receive static fully visible identity', async ({ p
   expect(mask).toBe('none');
   await expect(page.locator('.closing__final')).toHaveCSS('opacity', '1');
 });
+
+
+test('opening animation visibly sweeps the original orb and reveals the wordmark', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const intro = page.locator('[data-intro]');
+  const mark = intro.locator('[data-intro-mark]');
+  await expect(intro).toBeVisible();
+  await expect(mark).toHaveCount(1);
+  const angleAtStart = await mark.evaluate(element =>
+    parseFloat((element as HTMLElement).style.getPropertyValue('--sweep')) || 0);
+  await page.waitForTimeout(1050);
+  const angleInMotion = await mark.evaluate(element =>
+    parseFloat((element as HTMLElement).style.getPropertyValue('--sweep')) || 0);
+  expect(angleInMotion, 'Intro must show an actual changing crescent mask').toBeGreaterThan(angleAtStart + 65);
+  const wordmarkOpacity = await intro.locator('[data-intro-words]').evaluate(element =>
+    parseFloat(getComputedStyle(element).opacity));
+  expect(wordmarkOpacity).toBeGreaterThan(.1);
+  await expect(intro).toHaveCount(0, { timeout: 8000 });
+  await expect(page.locator('.hero h1')).toBeVisible();
+});
+
+test('closing orbit resolves to the exact supplied sun-and-orb source SVG', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toHaveCount(0, { timeout: 8000 });
+  await page.locator('[data-closing]').scrollIntoViewIfNeeded();
+  const before = await page.locator('.closing__final').evaluate(element =>
+    parseFloat(getComputedStyle(element).opacity));
+  // Traverse the complete scrubbed/pinned orbital sequence.
+  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+  await page.waitForTimeout(1400);
+  const after = await page.locator('.closing__final').evaluate(element =>
+    parseFloat(getComputedStyle(element).opacity));
+  expect(after, 'Final exact SVG should be fully shown').toBeGreaterThan(.95);
+  expect(after).toBeGreaterThanOrEqual(before);
+  await expect(page.locator('.closing__name')).toContainText('DAWNLIGHT');
+  const sources = await page.locator('.closing__final, .closing__sun-disc, .closing__traveler').evaluateAll(
+    elements => elements.map(element => ({
+      url: (element as HTMLImageElement).currentSrc,
+      loaded: (element as HTMLImageElement).naturalWidth > 0,
+    }))
+  );
+  expect(sources.every(source => source.loaded)).toBeTruthy();
+  expect(sources[0].url).toContain('dawnlight%20with%20sun%20svg.svg');
+});
+
+test('reduced motion skips opening and retains the final composite', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.locator('[data-intro]')).toBeHidden();
+  await expect(page.locator('.closing__final')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.closing__name')).toHaveCSS('opacity', '1');
+});

@@ -20,6 +20,7 @@ const canonical = new URL(path, Astro.site ?? 'https://dawnlightlabs.com');
     <link rel="canonical" href={canonical.href}/>
     <link rel="icon" type="image/svg+xml" href={brand.orb}/>
     <title>{title}</title>
+    <script is:inline>document.documentElement.classList.add('js-enabled');</script>
   </head>
   <body data-path={path}>
     <a class="skip-link" href="#main">Skip to content</a>

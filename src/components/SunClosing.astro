@@ -1,12 +1,19 @@
 ---
 import { brand } from '../data/brand';
 ---
-<section class="closing" data-closing aria-label="Dawnlight identity">
-  <div class="closing__stage" aria-hidden="true">
-    <span class="closing__sunlight"></span>
-    <span class="closing__orbit"><img src={brand.orb} alt="" loading="lazy" width="138" height="138"/></span>
-    <img class="closing__final" src={brand.sun} alt="" loading="lazy" width="582" height="582"/>
+<!-- The source SVG provides the unaltered final pose.
+     The standalone sun-disc derivative exists solely for the journey into this pose. -->
+<section class="closing closing--sequence" data-closing aria-label="Dawnlight">
+  <div class="closing__frame">
+    <div class="closing__composition">
+      <span class="closing__dawn" aria-hidden="true"></span>
+      <div class="closing__stage" aria-hidden="true">
+        <span class="closing__orbit-track"></span>
+        <img class="closing__sun-disc" src="/dawnlight%20sun%20disc%20only.svg" alt="" width="582" height="582" decoding="async" loading="lazy"/>
+        <img class="closing__traveler" src={brand.orb} alt="" width="290" height="289" decoding="async" loading="lazy"/>
+        <img class="closing__final" src={brand.sun} alt="" width="582" height="582" decoding="async" loading="lazy"/>
+      </div>
+      <h2 class="closing__name">DAWNLIGHT</h2>
+    </div>
   </div>
-  <div class="closing__name">DAWNLIGHT</div>
-  <a class="closing__contact" href={'mailto:' + brand.email}>Get in touch <span aria-hidden="true">↗</span></a>
 </section>

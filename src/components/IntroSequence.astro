@@ -1,0 +1,21 @@
+---
+import { brand } from '../data/brand';
+---
+<!-- A non-blocking, cinematic identity reveal on every fresh homepage load.
+     The blue orb is always the original master SVG. -->
+<div class="intro-sequence" data-intro aria-hidden="true">
+  <span class="intro-sequence__glow"></span>
+  <div class="intro-sequence__lockup">
+    <div class="intro-sequence__mark" data-intro-mark>
+      <img class="intro-sequence__base" src={brand.orb} width="290" height="289" alt="" fetchpriority="high"/>
+      <img class="intro-sequence__lit" src={brand.orb} width="290" height="289" alt="" fetchpriority="high"/>
+      <span class="intro-sequence__arc"></span>
+      <span class="intro-sequence__glint"></span>
+    </div>
+    <div class="intro-sequence__words" data-intro-words>
+      <span class="intro-sequence__name">DAWNLIGHT <span>LABS</span></span>
+      <span class="intro-sequence__rule"></span>
+    </div>
+  </div>
+  <span class="intro-sequence__bottom">INDEPENDENT RESEARCH LABORATORY · INDIA</span>
+</div>
