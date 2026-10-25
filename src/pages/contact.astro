@@ -12,7 +12,7 @@ import { brand } from '../data/brand';
         <div class="contact-refined__direct">
           <span class="contact-refined__label">ONE GENERAL INBOX</span>
           <a href={'mailto:'+brand.email} class="contact-refined__email">{brand.email} <span aria-hidden="true">↗</span></a>
-          <button type="button" class="contact-refined__copy" data-copy-email={brand.email}>Copy address <span aria-hidden="true">⧉</span></button>
+          <button type="button" class="contact-refined__copy-button" data-copy-email={brand.email}>Copy address <span aria-hidden="true">⧉</span></button>
           <p class="contact-refined__status" role="status" aria-live="polite" data-copy-status></p>
         </div>
         <div class="contact-refined__location"><span>BASED IN</span><strong>{brand.country}</strong></div>
