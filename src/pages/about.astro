@@ -35,7 +35,7 @@ import { brand, founders } from '../data/brand';
         <p>Different disciplines, a shared ambition to build technologies worth using.</p>
       </div>
       <div class="founder-grid">
-        {founders.map((founder,index) => <article class:list={['founder','founder--'+index,'js-reveal']}>
+        {founders.map((founder,index) => <article class:list={['founder','founder--'+index]}>
           <div class="founder-refined__graphic" aria-hidden="true"><span class="founder-refined__initial">{index===0?'A':'S'}</span><span class="founder-refined__orbit"></span><span class="founder-refined__grid"></span></div>
           <span class="founder-index">0{index + 1} / DAWNLIGHT</span>
           <h3 class="founder-name">{founder.name}</h3>
