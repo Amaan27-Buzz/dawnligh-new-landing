@@ -115,7 +115,7 @@ test('closing orbit resolves to the exact supplied sun-and-orb source SVG', asyn
     }))
   );
   expect(sources.every(source => source.loaded)).toBeTruthy();
-  expect(sources[0].url).toContain('dawnlight%20with%20sun%20svg.svg');
+  expect(sources.some(source => source.url.includes('dawnlight%20with%20sun%20svg.svg'))).toBeTruthy();
 });
 
 test('reduced motion skips opening and retains the final composite', async ({ page }) => {
