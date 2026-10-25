@@ -44,7 +44,7 @@ test('four project pages have distinct interactive concept sequences and honest 
 test('site works without unnecessary form or founder disclosures outside About', async ({ page }) => {
   await page.goto('/contact');
   await expect(page.locator('form')).toHaveCount(0);
-  const email = page.getByRole('link', { name: /contact@dawnlightlabs.com/i });
+  const email = page.locator('.contact-refined__email');
   await expect(email).toHaveAttribute('href','mailto:contact@dawnlightlabs.com');
   await page.getByRole('button', { name: /Copy address/i }).click();
   await expect(page.locator('[data-copy-status]')).not.toBeEmpty();
