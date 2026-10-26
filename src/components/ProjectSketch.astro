@@ -1,0 +1,53 @@
+---
+import { brand } from '../data/brand';
+import type { Project } from '../data/projects';
+const { kind } = Astro.props as { kind: Project['slug'] };
+---
+<figure class:list={['sketch','sketch--'+kind]} data-sketch={kind} aria-label={'Illustration of '+kind}>
+{kind === 'oscar' && <div class="coordination">
+  <div class="coordination__request"><span>Your intention</span><p>Make room<br/> for focused work.</p></div>
+  <div class="coordination__assistant"><img src={brand.orb} alt="" width="132" height="132"/><p>OSCAR</p></div>
+  <svg class="coordination__flow" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true"><path class="worker-route" d="M320 160 H500 C630 160 620 95 730 95"/><path class="worker-route" d="M500 160 C630 160 620 235 730 235"/><circle class="worker-packet" r="4"/><circle class="worker-packet" r="4"/></svg>
+  <div class="coordination__workers"><div><span>Research Worker</span><p>The context.</p></div><div><span>Planning Worker</span><p>The next steps.</p></div></div>
+  <div class="coordination__review" data-worker-review hidden><p>The plan comes back to you.</p><span>Review the work. Decide what happens next.</span></div>
+  <button class="sketch-control interactive-control" type="button" data-worker-toggle aria-pressed="false">Review the plan</button>
+</div>}
+{kind === 'takokit' && <div class="voice-workflow" data-voice-mode="listen">
+  <div class="voice-workflow__labels"><span data-voice-input>Speech in</span><span>One local runtime</span></div>
+  <div class="voice-output" data-voice-output>“A little closer.”</div>
+  <svg class="voice-paths" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true">
+    <path class="voice-path voice-path--sky" d="M-10 50 Q15 10 40 80 T95 130 C220 150 260 160 500 160"/>
+    <path class="voice-path voice-path--sun" d="M-10 120 Q15 45 40 130 T100 150 C240 160 280 160 500 160"/>
+    <path class="voice-path voice-path--paper" d="M-10 170 Q25 140 45 170 T100 170 C240 160 280 160 500 160"/>
+    <path class="voice-path voice-path--terra" d="M-10 285 Q15 310 40 245 T105 210 C240 175 280 160 500 160"/>
+    <path class="voice-result" d="M500 160 H1010"/>
+    <path class="voice-speech" d="M500 160 H650 Q675 160 690 180 T720 125 T750 175 T780 145 T810 160 H1010"/>
+    <circle class="voice-packet voice-packet--sky" r="4"/>
+    <circle class="voice-packet voice-packet--sun" r="4"/>
+    <circle class="voice-packet voice-packet--paper" r="4"/>
+    <circle class="voice-packet voice-packet--terra" r="4"/>
+  </svg>
+  <div class="voice-runtime"><img src={brand.orb} alt="" width="132" height="132"/></div>
+  <span class="voice-runtime-name" aria-hidden="true">Takokit</span>
+  <div class="voice-modes interactive-control" role="group" aria-label="Voice workflow"><button type="button" aria-pressed="true" data-voice="listen">Listen</button><button type="button" aria-pressed="false" data-voice="speak">Speak</button></div>
+  <p class="sr-only" data-voice-description aria-live="polite">Different voice models. One path from speech to text.</p>
+</div>}
+{kind === 'kinetable' && <div class="circuit-sketch" role="group" aria-label="Circuit sketch. Drag a component or focus one and use the arrow keys to move it.">
+  <p class="circuit-heading">An idea.<br/>A connection.</p><span class="circuit-mark" aria-hidden="true"></span>
+  <svg class="circuit-wires" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"><path d="M180 390 V252 H450 H790 V390 H180 Z" data-wire/></svg>
+  <button class="circuit-part" disabled data-part="cell" data-x=".18" data-y=".65" aria-label="Move cell with arrow keys" type="button"><svg class="component-cell" viewBox="0 0 48 64" aria-hidden="true"><path d="M24 0 V9 M24 55 V64"/><rect x="12" y="9" width="24" height="46" rx="3"/><path class="component-print" d="M19 21 H29 M24 16 V26 M19 43 H29"/></svg><span>Cell</span></button>
+  <button class="circuit-part" disabled data-part="resistor" data-x=".45" data-y=".42" aria-label="Move resistor with arrow keys" type="button"><svg class="component-resistor" viewBox="0 0 80 48" aria-hidden="true"><path d="M0 24 H20 M60 24 H80"/><rect x="17" y="13" width="46" height="22" rx="7"/><path class="component-band" d="M29 13 V35 M39 13 V35 M51 13 V35"/></svg><span>Resistor</span></button>
+  <button class="circuit-part circuit-part--led" disabled data-part="led" data-x=".79" data-y=".65" aria-label="Move LED with arrow keys" type="button"><svg class="component-led" viewBox="0 0 48 64" aria-hidden="true"><path d="M18 42 V64 M30 42 V60"/><path class="component-bulb" d="M12 39 V22 A12 12 0 0 1 36 22 V39 Z"/><path class="component-print" d="M18 24 V20 Q18 16 22 16"/><path d="M9 41 H39"/></svg><span>LED</span></button>
+  <p class="circuit-instruction">Move a part. Follow the connection.</p>
+  <p class="sr-only" aria-live="polite" data-circuit-status></p>
+</div>}
+{kind === 'aish' && <div class="shell-sketch">
+  <div class="shell-request"><span>Start with an intention</span><p data-shell-request>Find the five biggest files in this folder.</p></div>
+  <div class="shell-proposal"><span>A command you can inspect</span><code data-shell-command>{'find . -type f -exec du -h {} + | sort -rh | head -5'}</code></div>
+  <p class="shell-explanation" data-shell-explanation hidden>Find files below this folder, measure their sizes, sort largest first, and show five results.</p>
+  <div class="shell-actions interactive-control"><button type="button" data-shell-action="approve">Approve</button><button type="button" data-shell-action="explain" aria-expanded="false">Explain</button><button type="button" data-shell-action="dismiss">Dismiss</button></div>
+  <p class="shell-status" data-shell-status aria-live="polite">A proposed command. You decide what runs.</p>
+  <div class="shell-examples interactive-control" role="group" aria-label="Example requests"><button type="button" data-shell-example="0" aria-pressed="true">Find large files</button><button type="button" data-shell-example="1" aria-pressed="false">Check this folder</button><button type="button" data-shell-example="2" aria-pressed="false">See recent commits</button></div>
+</div>}
+<figcaption><span>{kind === 'kinetable' ? 'An interactive sketch of connections, not a circuit simulation.' : kind === 'aish' ? 'An illustrative workflow. No commands are executed.' : kind === 'takokit' ? 'An illustration of voice workflows. No microphone or speech model is connected.' : 'An illustration of coordination, not a running instance of OSCAR.'}</span></figcaption>
+</figure>

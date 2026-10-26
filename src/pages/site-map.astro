@@ -1,0 +1,5 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { pageGroups, futurePages } from '../data/page-map';
+---
+<SiteLayout draft path="/site-map" title="Site Map — Dawnlight Labs" description="A human-readable directory of Dawnlight's pages, section links, draft publication previews and planned destinations."><section class="shell page-opening"><p class="context">Website review directory</p><h1>Every page.<br/>A clear way through.</h1><p class="reading-copy">Open each destination below to review the website. Draft pages are labeled and excluded from search indexing.</p></section><div class="shell page-map">{pageGroups.map(group=><section class="page-map-group"><h2>{group.title}</h2><ul>{group.links.map(link=><li><a href={link.href}>{link.label}</a><small>{link.href} — {link.detail}</small></li>)}</ul></section>)}<section class="page-map-group"><h2>Planned for later</h2><div><p>Architecture only. These pages are not built or linked as live destinations yet.</p><ul>{futurePages.map(page=><li>{page.path}<small>{page.purpose}</small></li>)}</ul></div></section></div></SiteLayout>

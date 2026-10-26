@@ -57,14 +57,6 @@
 @keyframes lens-pulse{50%{opacity:.23;transform:scale(1.35)}}
 @keyframes lens-breathe{50%{stroke-dashoffset:100}100%{stroke-dashoffset:200}}
 
-/* The orb begins concealed BEHIND the yellow sun. It only becomes a
-   foreground body when it clears the solar edge, on its way to the master SVG pose. */
-.closing--sequence .closing__orbit-track{z-index:0}
-.closing--sequence .closing__traveler--behind{z-index:1;filter:drop-shadow(2px 10px 10px rgba(0,0,0,.16))}
-.closing--sequence .closing__sun-disc{z-index:2}
-.closing--sequence .closing__traveler:not(.closing__traveler--behind){z-index:3}
-.closing--sequence .closing__final{z-index:4}
-.closing--sequence .closing__stage{overflow:visible}
 /* Editorial entrances follow section structure, never block reading. */
 .research-culture-grid .culture-item{position:relative;overflow:hidden}
 .research-culture-grid .culture-item::before{content:"";position:absolute;top:0;left:0;height:1px;

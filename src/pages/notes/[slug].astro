@@ -1,0 +1,7 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { notes } from '../../data/notes';
+export function getStaticPaths(){ return notes.map(note=>({params:{slug:note.slug},props:{note}})); }
+const { note } = Astro.props;
+---
+<SiteLayout draft path={'/notes/'+note.slug} title={note.title+' — Dawnlight Labs'} description={note.summary}><article class="shell publication-page"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/notes">Publications &amp; Notes</a></nav><header class="page-opening"><p class="context">{note.kind}</p><h1>{note.title}</h1><p class="reading-copy">{note.summary}</p></header><p class="draft-notice">Draft preview. Placeholder content for review; this work has not been published.</p><div class="publication-copy">{note.sections.map(section=><section><h2>{section.title}</h2><p>{section.text}</p></section>)}<nav aria-label="Related reading"><a class="plain-link" href="/notes">All publications &amp; notes</a>{note.project && <a class="plain-link" href={'/projects/'+note.project}>Explore the related project</a>}<a class="plain-link" href="/research">Research at Dawnlight</a></nav></div></article></SiteLayout>

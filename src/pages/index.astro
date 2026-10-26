@@ -1,63 +1,16 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import OrbHero from '../components/OrbHero.astro';
 import IntroSequence from '../components/IntroSequence.astro';
-import SectionIntro from '../components/SectionIntro.astro';
-import ProjectGallery from '../components/ProjectGallery.astro';
 import SunClosing from '../components/SunClosing.astro';
-import ResearchAtlas from '../components/ResearchAtlas.astro';
+import HeroDawn from '../components/HeroDawn.astro';
+import ProjectHighlights from '../components/ProjectHighlights.astro';
+import { researchAreas } from '../data/research';
 ---
 <SiteLayout title="Dawnlight Labs — Technology built around people." path="/">
   <IntroSequence/>
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="shell hero-layout">
-      <div class="hero-content">
-        <span class="eyebrow">Independent research laboratory / India</span>
-        <h1 id="hero-title">Technology built <span class="blue">around people.</span></h1>
-        <p class="hero-lead">We investigate intelligence, computing and emerging hardware—and build technologies that make those ideas useful.</p>
-        <a class="text-link" href="/research">Explore the laboratory <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="hero-visual">
-        <OrbHero/>
-        <span class="hero-visual-caption">Light, in motion</span>
-      </div>
-    </div>
-    <div class="hero-index" aria-hidden="true"><div class="shell"><span>Independent research · Selected projects</span><span>SCROLL TO EXPLORE ↓</span></div></div>
-  </section>
-  <section class="section research-summary" aria-labelledby="home-research">
-    <div class="shell">
-      <div class="section-intro js-reveal">
-        <div class="section-intro__copy">
-          <span class="eyebrow">01 / Research</span>
-          <h2 id="home-research">Explore what technology can become.</h2>
-          <p>New approaches to intelligent systems, efficient computing and the technologies connecting them to everyday life.</p>
-        </div>
-        <a class="text-link" href="/research">Our research <span aria-hidden="true">↗</span></a>
-      </div>
-      <ResearchAtlas/>
-    </div>
-  </section>
-  <section class="projects-section" aria-labelledby="home-projects">
-    <div class="shell">
-      <div class="section-intro js-reveal">
-        <div class="section-intro__copy">
-          <span class="eyebrow">02 / Selected projects</span>
-          <h2 id="home-projects">Built from questions worth exploring.</h2>
-          <p>Software and experiments that bring research closer to real use.</p>
-        </div>
-        <a class="text-link" href="/projects">All projects <span aria-hidden="true">↗</span></a>
-      </div>
-      <ProjectGallery/>
-    </div>
-  </section>
-  <section class="section principles" aria-labelledby="home-principles">
-    <div class="shell">
-      <SectionIntro eyebrow="03 / What matters" title="Better technology starts with better priorities." href="/about" link="Our philosophy"/>
-      <div class="principle-row js-reveal"><span>01 / ORIGINS</span><h3>Ask original questions, and test the answers.</h3></div>
-      <div class="principle-row js-reveal"><span>02 / HUMAN CONTROL</span><h3>Keep people informed and in control.</h3></div>
-      <div class="principle-row js-reveal"><span>03 / RESOURCES</span><h3>Respect time, compute, attention and trust.</h3></div>
-      <div class="principle-row js-reveal"><span>04 / HONESTY</span><h3>Make useful things, without unsupported promises.</h3></div>
-    </div>
-  </section>
-  <SunClosing/>
+  <section class="home-opening shell" aria-labelledby="hero-title"><p class="context">An independent research laboratory in India.</p><h1 id="hero-title">Technology built<br/> around people.</h1><div class="opening-bottom"><p>Intelligence, computing, and the hardware underneath.<br class="desktop-break"/> We explore what they could become, and build things that bring them closer to everyday life.</p><a class="button button-blue" href="#work">Meet the projects</a></div><HeroDawn/></section>
+  <section class="research-invitation shell section-space" data-home-chapter aria-labelledby="home-research"><div><p class="context">Research at Dawnlight</p><h2 id="home-research">There is more than<br/>one way forward.</h2><p class="reading-copy">From the architecture of a model to the way a person uses it. Six connected fields guide what we investigate.</p><a class="plain-link" href="/research">Explore our research</a><br/><a class="plain-link" href="/notes">Publications &amp; Notes</a></div><div class="research-topics research-preview-list" aria-label="Research fields">{researchAreas.map(area=><a href={'/research#'+area.art}>{area.title}</a>)}</div></section>
+  <section id="work" class="work-section" data-home-chapter aria-labelledby="home-projects"><div class="shell home-work-heading"><div><p class="context">Projects</p><h2 id="home-projects">From the lab.</h2></div><p>Personal intelligence. Voice. Electronics. Developer tools.<br/>A few ways our ideas take shape.</p></div><ProjectHighlights/><div class="shell"><a class="plain-link" href="/projects">All projects and interactive previews</a></div></section>
+  <section class="home-belief shell section-space" data-home-chapter aria-labelledby="home-belief"><p class="context">What guides the work</p><h2 id="home-belief">Your time. Your attention.<br/>Your say in what happens.</h2><div><p>Technology should earn its place in your day. We consider efficiency, clarity and human control from the first question to the last interaction.</p><a class="plain-link" href="/about">Our principles</a></div></section>
+  <SunClosing slot="closing"/>
 </SiteLayout>

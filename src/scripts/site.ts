@@ -1,8 +1,11 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { setupResearchAtlases } from './research-atlas';
-import { setupSiteInteractions } from './experience-interactions';
-import { setupEditorialMotion } from './editorial-motion';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+
+import { setupWritingArchive } from './writing-archive';
+import { setupSketches } from './sketches';
+import { setupMotion } from './motion';
+import { setupScrollbarSurface } from './scrollbar-surface';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -10,32 +13,38 @@ function setupMenu(): void {
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const nav = document.getElementById('primary-nav');
   if (!toggle || !nav) return;
+  nav.inert = window.innerWidth <= 760;
+  const background = document.querySelectorAll<HTMLElement>('main, .site-footer, [data-closing]');
   const close = () => {
+    background.forEach(element => { element.inert = false; });
     document.body.classList.remove('menu-open');
+    nav.inert = window.innerWidth <= 760;
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Open navigation');
   };
   toggle.addEventListener('click', () => {
     const open = !document.body.classList.contains('menu-open');
     document.body.classList.toggle('menu-open', open);
+    nav.inert = !open;
+    background.forEach(element => { element.inert = open; });
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
   });
   nav.querySelectorAll('a').forEach(link => link.addEventListener('click', close));
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') close(); });
-  window.addEventListener('resize', () => { if (window.innerWidth > 760) close(); }, { passive: true });
-}
-
-function setupScenePausing(): void {
-  const cards = Array.from(document.querySelectorAll<HTMLElement>('.project-card'));
-  if (!('IntersectionObserver' in window)) return;
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => entry.target.classList.toggle('is-paused', !entry.isIntersecting));
-  }, { threshold: .01 });
-  cards.forEach(card => observer.observe(card));
-  document.addEventListener('visibilitychange', () => {
-    document.body.classList.toggle('is-paused', document.hidden);
+  document.addEventListener('keydown', event => {
+    if (!document.body.classList.contains('menu-open')) return;
+    if (event.key === 'Escape') { close(); toggle.focus(); }
+    if (event.key === 'Tab') {
+      const links = nav.querySelectorAll<HTMLAnchorElement>('a');
+      const last = links[links.length - 1];
+      if (event.shiftKey && document.activeElement === toggle) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); toggle.focus(); }
+    }
   });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 760) close();
+    else nav.inert = !document.body.classList.contains('menu-open');
+  }, { passive: true });
 }
 
 function setupIntroduction(): void {
@@ -45,183 +54,97 @@ function setupIntroduction(): void {
 
   const mark = intro.querySelector<HTMLElement>('[data-intro-mark]');
   const words = intro.querySelector<HTMLElement>('[data-intro-words]');
-  const arc = intro.querySelector<HTMLElement>('.intro-sequence__arc');
-  const lit = intro.querySelector<HTMLElement>('.intro-sequence__lit');
-  if (!mark || !words || !arc || !lit) { intro.remove(); return; }
-
-  // No session gate: a fresh homepage load always shows the requested opening.
-  // Native SVG is progressively revealed by a real, rotating angular mask.
-  const reveal = { angle: 0 };
-  mark.style.setProperty('--sweep', '0deg');
-  const tl = gsap.timeline({
-    onComplete: () => { intro.remove(); document.documentElement.dataset.introComplete = 'true'; },
-  });
-  tl.fromTo(mark,
-    { opacity: 0, scale: .74, rotation: -32 },
-    { opacity: 1, scale: 1, rotation: 0, duration: .82, ease: 'power3.out' }, 0)
-    .to(arc, { opacity: 1, rotation: 310, duration: 1.30, ease: 'power2.inOut' }, .15)
-    .to(reveal, {
-      angle: 360, duration: 1.35, ease: 'power2.inOut',
-      onUpdate: () => mark.style.setProperty('--sweep', reveal.angle.toFixed(2) + 'deg'),
-    }, .22)
-    .to(arc, { opacity: 0, duration: .32 }, 1.24)
-    .fromTo('.intro-sequence__glint', { opacity: 0, scale: .6 },
-      { opacity: .9, scale: 1.55, duration: .38, yoyo: true, repeat: 1 }, 1.05)
-    .to(words, { opacity: 1, clipPath: 'inset(0 0% 0 0)', duration: .85, ease: 'power3.inOut' }, .79)
-    .fromTo('.intro-sequence__rule', { scaleX: 0 },
-      { scaleX: 1, duration: .66, ease: 'power2.out' }, 1.13)
-    .to('.intro-sequence__bottom', { opacity: .75, duration: .5 }, 1.24)
-    .to(intro, { clipPath: 'inset(0 0 100% 0)', duration: .82, ease: 'power3.inOut' }, 2.12);
-}
-
-function setupHero(): void {
-  if (reducedMotion) return;
-  const hero = document.querySelector<HTMLElement>('[data-hero-orb]');
-  const body = hero?.querySelector<HTMLElement>('.hero-orb__body');
-  if (!hero || !body) return;
-  // The hero is fully assembled on the actual page; opening belongs to the brand film.
-  gsap.set(hero, { '--sweep': '360deg' });
-  gsap.fromTo(body, { y: 35, scale: .93 }, { y: 0, scale: 1, duration: 1.6, ease: 'power2.out', delay: 1.95 });
-  gsap.to(body, { rotation: 27, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .85 } });
-
-  const visual = document.querySelector<HTMLElement>('.hero-visual');
-  visual?.addEventListener('pointermove', event => {
-    if (event.pointerType === 'touch') return;
-    const rect = visual.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - .5;
-    const y = (event.clientY - rect.top) / rect.height - .5;
-    gsap.to(body, { x: x * 23, y: y * 21, duration: .65, overwrite: 'auto', ease: 'power2.out' });
-  }, { passive: true });
-  visual?.addEventListener('pointerleave', () => gsap.to(body, { x: 0, y: 0, duration: .75 }));
-}
-
-function setupContentMotion(): void {
-  if (reducedMotion) return;
-  gsap.utils.toArray<HTMLElement>('.js-reveal').forEach(element => {
-    gsap.from(element, {
-      y: 34, autoAlpha: 0, duration: 1.03, ease: 'power3.out',
-      scrollTrigger: { trigger: element, start: 'top 94%', once: true },
-    });
-  });
-  document.querySelectorAll<HTMLElement>('.research-atlas').forEach(atlas => {
-    const visual = atlas.querySelector<HTMLElement>('.research-atlas__visual');
-    if (visual) gsap.from(visual, { scale: .94, y: 28, duration: 1.18, ease: 'power2.out', scrollTrigger: { trigger: atlas, start: 'top 92%', once: true } });
-  });
-  document.querySelectorAll<HTMLElement>('.project-card').forEach(card => {
-    const artwork = card.querySelector<HTMLElement>('.project-card__art');
-    const scene = card.querySelector<HTMLElement>('.art');
-    if (artwork) {
-      // Artwork continuously settles into place as the card crosses the viewport.
-      // Content, labels and click targets remain completely stationary.
-      gsap.fromTo(artwork,
-        { scale: 1.14 },
-        { scale: 1, ease: 'none',
-          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: .85 } }
-      );
-    }
-    card.addEventListener('pointermove', event => {
-      if (event.pointerType === 'touch') return;
-      const bounds = card.getBoundingClientRect();
-      const x = (event.clientX - bounds.left) / bounds.width - .5;
-      const y = (event.clientY - bounds.top) / bounds.height - .5;
-      card.style.setProperty('--mx', ((x+.5)*100).toFixed(2) + '%');
-      card.style.setProperty('--my', ((y+.5)*100).toFixed(2) + '%');
-      if (scene) gsap.to(scene, { x: x * 13, y: y * 13, duration: .75, ease:'power2.out', overwrite: 'auto' });
-    }, { passive: true });
-    card.addEventListener('pointerleave', () => {
-      if (scene) gsap.to(scene, { x: 0, y: 0, duration: .9, ease: 'power2.out', overwrite: 'auto' });
-    });
-  });
+  if (!mark || !words) { intro.remove(); return; }
+  const finish = () => {
+    intro.remove();
+    document.documentElement.dataset.introComplete = 'true';
+    document.dispatchEvent(new Event('dawnlight:intro-complete'));
+  };
+  // A failed module cannot leave a permanent overlay; CSS also has an exit.
+  const fallback = window.setTimeout(finish, 5000);
+  const tl = gsap.timeline({ onComplete: () => { clearTimeout(fallback); finish(); } });
+  tl.fromTo(mark, { opacity: 0, scale: .9 },
+      { opacity: 1, scale: 1, duration: .7, ease: 'power3.out' }, 0)
+    .fromTo(intro.querySelector('.swipe-lead'), { x: -430, y: -410 },
+      { x: 0, y: 0, duration: 1.25, ease: 'power3.out' }, .12)
+    .fromTo(intro.querySelectorAll('.swipe-trail'), { x: -410, y: -390 },
+      { x: 0, y: 0, duration: 1.65, ease: 'power3.out' }, .23)
+    .fromTo(intro.querySelector('.parallax-mid'), { x: 95, y: 50 },
+      { x: 0, y: 0, duration: 1.8, ease: 'power3.out' }, 0)
+    .fromTo(intro.querySelector('.parallax-core'), { x: 160, y: 90 },
+      { x: 0, y: 0, duration: 1.8, ease: 'power3.out' }, 0)
+    .fromTo(intro.querySelector('.parallax-rim'), { x: -70, y: -40 },
+      { x: 0, y: 0, duration: 1.8, ease: 'power3.out' }, 0)
+    .fromTo(words, { opacity: 0, y: 14, clipPath: 'inset(0 100% 0 0)' },
+      { opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0)', duration: .8, ease: 'power2.out' }, 1.05)
+    .to(intro, { opacity: 0, duration: .65, ease: 'power2.inOut' }, 2.4);
 }
 
 function setupFinale(): void {
   const closing = document.querySelector<HTMLElement>('[data-closing]');
   if (!closing || reducedMotion) return;
-  const frame = closing.querySelector<HTMLElement>('.closing__frame');
-  const stage = closing.querySelector<HTMLElement>('.closing__stage');
-  const sun = closing.querySelector<HTMLElement>('.closing__sun-disc');
-  const behind = closing.querySelector<HTMLElement>('.closing__traveler--behind');
-  const traveler = closing.querySelector<HTMLElement>('.closing__traveler:not(.closing__traveler--behind)');
-  const composite = closing.querySelector<HTMLElement>('.closing__final');
-  const orbitTrack = closing.querySelector<HTMLElement>('.closing__orbit-track');
-  const dawn = closing.querySelector<HTMLElement>('.closing__dawn');
+  const orb = closing.querySelector<SVGGElement>('.closing__satellite');
+  const sun = closing.querySelector<SVGGElement>('.closing__sun');
   const name = closing.querySelector<HTMLElement>('.closing__name');
-  if (!frame || !stage || !sun || !behind || !traveler || !composite || !orbitTrack || !dawn || !name) return;
+  const tracks = closing.querySelectorAll('.closing__orbit-track');
+  if (!orb || !sun || !name) return;
 
-  // Orb coordinates are offsets from its exact destination in the original
-  // 582x582 artwork. Both images use that destination in CSS. Keep the two
-  // passes in sync so the depth swap doesn't move or resize the orb.
-  const stageWidth = () => stage.getBoundingClientRect().width || 520;
-  // Entirely inside the solar disc at the beginning (not above the sun).
-  const pose = { x: -.22, y: -.14, scale: .69, rotation: -22 };
-  const place = () => gsap.set([behind, traveler], {
-    x: pose.x * stageWidth(),
-    y: pose.y * stageWidth(),
-    scale: pose.scale,
-    rotation: pose.rotation,
-  });
-  gsap.set(composite, { opacity: 0 });
-  gsap.set(sun, { opacity: 0, scale: .62, y: 55 });
-  gsap.set(behind, { opacity: 0 });
-  gsap.set(traveler, { opacity: 0 });
-  gsap.set(orbitTrack, { opacity: 0, scale: .72 });
-  gsap.set(dawn, { opacity: 0 });
-  gsap.set(name, { opacity: 0, y: 38 });
-  place();
-
-  // The physical journey is below, not above, the sun:
-  // hidden at its center-left -> peeks out on its left edge -> runs behind
-  // the lower rim -> emerges at the lower-right -> returns to the exact
-  // final composition. The back/front images share the same transform.
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: closing, start: 'top top',
-      end: () => '+=' + Math.max(1080, Math.round(window.innerHeight * 1.8)),
-      pin: frame, pinSpacing: true, anticipatePin: 1,
-      scrub: .75, invalidateOnRefresh: true,
-    },
-    defaults: { ease: 'sine.inOut' },
-  });
-
-  tl.to(dawn, { opacity: .93, duration: .28 }, 0)
-    .to(sun, { opacity: 1, scale: 1, y: 0, duration: .23 }, .02)
-    .to(orbitTrack, { opacity: .36, scale: 1, duration: .22 }, .12)
-    .to(orbitTrack, { rotation: -125, duration: 1.03, ease: 'none' }, .25)
-    // Starts fully concealed by the yellow disc (behind = z1, sun = z2).
-    .to(behind, { opacity: 1, duration: .08 }, .25)
-    // Arc from the rear-left, then BELOW the solar rim. No top-right drop.
-    .to(pose, { x: -.43, y: .01, scale: .78, rotation: -23, duration: .24, onUpdate: place }, .28)
-    .to(pose, { x: -.35, y: .22, scale: .83, rotation: -16, duration: .25, onUpdate: place }, .52)
-    .to(pose, { x: -.06, y: .34, scale: .87, rotation: -3, duration: .29, onUpdate: place }, .77)
-    // Only change depth once the orb has rounded the lower solar edge.
-    .to(traveler, { opacity: 1, duration: .08 }, 1.03)
-    .to(behind, { opacity: 0, duration: .08 }, 1.03)
-    .to(pose, { x: .20, y: .22, scale: .95, rotation: 11, duration: .26, onUpdate: place }, 1.06)
-    .to(pose, { x: .12, y: .10, scale: .98, rotation: 6, duration: .19, onUpdate: place }, 1.32)
-    // Resolve to exactly x=0,y=0,rotation=0,scale=1 before the master swap.
-    .to(pose, { x: 0, y: 0, scale: 1, rotation: 0, duration: .23, onUpdate: place }, 1.51)
-    .to(name, { opacity: 1, y: 0, duration: .26 }, 1.51)
-    .to(composite, { opacity: 1, duration: .11 }, 1.75)
-    .to([behind, traveler, sun, orbitTrack], { opacity: 0, duration: .11 }, 1.75)
-    .to({}, { duration: .45 }, 1.9);
-
-  const inFinale = () => document.documentElement.classList.add('finale-active');
-  const outFinale = () => document.documentElement.classList.remove('finale-active');
+  // SVG viewBox coordinates keep the same orbit at every screen size.
+  // One body, one source: no front/back duplicates or final-frame replacement.
   ScrollTrigger.create({
     trigger: closing, start: 'top top', end: 'bottom top',
-    onEnter: inFinale, onEnterBack: inFinale,
-    onLeave: outFinale, onLeaveBack: outFinale,
+    toggleClass: { targets: document.documentElement, className: 'finale-active' },
   });
-  window.addEventListener('resize', place, { passive: true });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: closing, start: 'top bottom', end: 'bottom bottom',
+      scrub: .45, invalidateOnRefresh: true,
+    },
+    defaults: { ease: 'sine.inOut' },
+  })
+    .fromTo(sun, { scale: .78, opacity: .25, svgOrigin: '291 314' },
+      { scale: 1, opacity: 1, duration: .32 }, 0)
+    .fromTo(orb, { x: -260, y: -80, scale: .45, svgOrigin: '412 380', opacity: 0 },
+      { opacity: 1, duration: .15 }, .08)
+    .to(orb, {
+      motionPath: {
+        path: [{ x: -260, y: -80 }, { x: -340, y: 0 }, { x: -270, y: 120 },
+          { x: -100, y: 150 }, { x: 35, y: 55 }, { x: 0, y: 0 }],
+        curviness: 1.2,
+      },
+      scale: 1, duration: 1.06, ease: 'power1.inOut',
+    }, .08)
+    .fromTo(tracks, { opacity: 0, scale: .85 }, { opacity: .65, scale: 1, duration: .25 }, .12)
+    .to(tracks, { opacity: 0, duration: .3 }, .8)
+    .fromTo(name, { y: 18, opacity: .2 }, { y: 0, opacity: 1, duration: .3 }, .84)
+    .to({}, { duration: .3 });
 }
 
 setupMenu();
-setupScenePausing();
-setupResearchAtlases();
-setupSiteInteractions();
-if (!reducedMotion) gsap.registerPlugin(ScrollTrigger);
+setupSketches();
+setupWritingArchive();
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 setupIntroduction();
-setupHero();
-setupContentMotion();
-setupEditorialMotion();
 setupFinale();
+setupMotion();
+setupScrollbarSurface();
+
+document.querySelectorAll<HTMLButtonElement>('[data-back-to-top]').forEach(button => {
+  button.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' });
+    document.querySelector<HTMLAnchorElement>('.wordmark')?.focus({ preventScroll: true });
+  });
+});
+document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach(button => {
+  button.addEventListener('click', async () => {
+    const status = document.querySelector<HTMLElement>('[data-copy-status]');
+    if (!status) return;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyEmail ?? '');
+      status.textContent = 'Address copied.';
+    } catch {
+      status.textContent = 'Please select the email address to copy it.';
+    }
+  });
+});

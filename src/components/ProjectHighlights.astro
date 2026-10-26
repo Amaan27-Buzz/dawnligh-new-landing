@@ -1,0 +1,13 @@
+---
+import { projects } from '../data/projects';
+import { brand } from '../data/brand';
+---
+<div class="project-highlights shell">{projects.map(project=><a class:list={['project-highlight','project-highlight--'+project.slug]} href={'/projects/'+project.slug} aria-label={'About '+project.name}>
+  <div class="project-highlight__copy"><p class="project-type">{project.type}</p><h3 class="project-name">{project.name}</h3><p>{project.summary}</p><span class="highlight-link">Explore {project.name}</span></div>
+  <div class="project-highlight__art" aria-hidden="true">
+    {project.slug === 'oscar' && <><svg viewBox="0 0 600 240"><path d="M185 120 C275 120 280 65 365 65 M185 120 C275 120 280 175 365 175"/></svg><img class="highlight-orb" src={brand.orb} alt="" width="150" height="150" loading="lazy"/><span class="highlight-caption">Context.<br/>A plan.<br/>Your decision.</span></>}
+    {project.slug === 'takokit' && <><svg viewBox="0 0 600 240"><path d="M-30 50 Q40 20 60 80 T300 120 H630"/><path d="M-30 160 Q30 205 75 155 T300 120"/><path d="M-30 100 Q25 55 60 100 T300 120"/></svg><img class="highlight-orb" src={brand.orb} alt="" width="110" height="110" loading="lazy"/></>}
+    {project.slug === 'kinetable' && <svg viewBox="0 0 600 240"><circle class="highlight-sun" cx="430" cy="160" r="70"/><path d="M110 160 V65 H430 V160 H110"/><rect class="highlight-component" x="240" y="51" width="62" height="28" rx="8"/><path d="M257 51 V79 M279 51 V79"/><rect class="highlight-component" x="98" y="135" width="24" height="50" rx="3"/><path d="M420 175 V150 A10 10 0 0 1 440 150 V175Z"/></svg>}
+    {project.slug === 'aish' && <div class="highlight-command"><p>Find what I was working on.</p><code>git log -5 --oneline</code><span>You decide what runs.</span></div>}
+  </div>
+</a>)}</div>

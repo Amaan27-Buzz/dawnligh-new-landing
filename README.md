@@ -67,19 +67,23 @@ Browser tests use the installed Chrome (Playwright channel: chrome). Run npm run
 
 ## Implementation layout
 
-- src/styles/global.css — founding brand rules, hero, research, gallery and core layouts
-- src/styles/finish.css — branded scrollbar, accessible progress rail and complete inner-page design
-- src/components/ProjectExperience.astro — accessible, three-state illustrated concept scenes
-- src/data/project-stories.ts — per-project copy and conceptual interaction structure
-- src/scripts/experience-interactions.ts — native scroll progress, project selection, copy-email and back-to-top controls
-- src/scripts/site.ts — global GSAP identity and scroll sequences
-- tests/site.spec.ts, tests/motion-visual.spec.ts, tests/completion.spec.ts — browser QA
+The design language and reasons for it are documented in [DESIGN.md](DESIGN.md).
+
+- src/styles/global.css — active typography, palette, curved fields, layouts, illustrations, and responsive rules
+- src/components/ProjectSketch.astro — four project-specific explanatory sketches
+- src/components/ProjectGallery.astro — project compositions shared by Home and Projects
+- src/scripts/sketches.ts — voice selection, circuit manipulation, command examples, and review interaction
+- src/scripts/site.ts — mobile navigation, clipboard, back-to-top, opening crescent, and final sun/orb composition
+- src/data/projects.ts — public project descriptions and statuses
+- tests/site.spec.ts, tests/motion-visual.spec.ts, tests/completion.spec.ts — browser QA and review captures
+
+Legacy atlas, artwork, and motion files are retained but are not imported by the redesigned pages. The practical homepage footer precedes the final brand sequence.
 
 ## Pages
 
 - / — corporate introduction, animated original orb, research, project gallery and sun-mark closing
-- /research — approved broad research fields and research culture
-- /projects — four distinct cinematic project visuals
+- /research — research interests, readable questions, and approach
+- /projects — four project-specific explanatory interactions
 - /projects/oscar, /projects/kinetable, /projects/takokit, /projects/aish — project overviews
 - /about — Dawnlight philosophy and founders
 - /contact — the single general inbox
@@ -102,10 +106,10 @@ No internal research architecture, proposed governance, ownership details or unp
 
 The corporate website is implemented as a modular Astro static site:
 - Full-page opening animation and scroll-linked closing composition using the supplied original Dawnlight identity.
-- Interactive six-domain research atlas; public research programs appear only with disclosure approval.
-- Cinematic gallery and individual interactive, clearly labelled *conceptual* experiences for all four projects.
+- Six readable research interests and questions; public research programs appear only with disclosure approval.
+- Individual project compositions and clearly labelled illustrative interactions for all four projects.
 - About page with verified founder names and roles; Contact page with one general mailbox.
-- Custom blue native scrollbar and decorative reading progress rail. The scrollbar remains draggable, and native wheel, touch and keyboard scrolling are preserved.
+- Native scrolling, restrained content entrances and scroll-linked daybreak artwork, with visible content even if scripts fail.
 - Accessible mobile navigation, reduced-motion presentation, responsive layouts, sitemap, robots.txt and 404 page.
 - Playwright smoke and interaction tests plus CI-captured page screenshots.
 
@@ -123,3 +127,7 @@ The site's code is completed and validated by its test suite, while production r
 ## Brand
 
 Original identity: blue orb primary; sun composition secondary. Colours and typography follow the Dawnlight Foundation Kit v0.1. Public positioning: **Technology built around people.**
+
+## Vercel deployment
+
+See [LAUNCH.md](LAUNCH.md) for import settings, Web Analytics activation, production verification and the completion audit. Privacy, Terms and Questions are available at `/privacy`, `/terms` and `/faq`.

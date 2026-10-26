@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '24'
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Check content and supplied assets
         run: npm run test:content
       - name: Type-check Astro
@@ -39,5 +39,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dawnlight-motion-review
-          path: test-results/motion-capture/
+          path: test-results/
           if-no-files-found: ignore

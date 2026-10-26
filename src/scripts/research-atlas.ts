@@ -26,10 +26,6 @@ export function setupResearchAtlases(): void {
     buttons.forEach((button, index) => {
       button.addEventListener('click', () => activate(index));
       button.addEventListener('focus', () => activate(index));
-      // Desktop visitors can browse the visual without clicking.
-      button.addEventListener('pointerenter', (event) => {
-        if (event.pointerType === 'mouse' || event.pointerType === 'pen') activate(index);
-      });
     });
 
     if (stage && !reduced()) {

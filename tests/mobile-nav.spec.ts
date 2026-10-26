@@ -1,0 +1,36 @@
+import {test,expect} from '@playwright/test';
+
+test('mobile navigation is icon-only and transitions remain reversible',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/projects');
+  const toggle=page.locator('[data-menu-toggle]');
+  await expect(toggle).toHaveAccessibleName('Open navigation');
+  const nav=page.getByRole('navigation',{name:'Primary'});
+  await expect(toggle).toHaveText('');
+  const icon=page.locator('.menu-lines');
+  const closed=await icon.evaluate(el=>getComputedStyle(el,'::before').transform);
+  await toggle.click();
+  await expect(toggle).toHaveAccessibleName('Close navigation');
+  await expect(nav).toBeVisible();
+  await expect.poll(()=>icon.evaluate(el=>getComputedStyle(el,'::before').transform)).not.toBe(closed);
+  await expect(nav).toHaveCSS('opacity','1');
+  await expect(nav.getByRole('link',{name:'Contact',exact:true})).toHaveCSS('opacity','1');
+  await page.screenshot({path:'output/mobile-menu-open.png'});
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded','false');
+  await expect(page.locator('#primary-nav')).toHaveAttribute('inert','');
+  await toggle.click();
+  await expect(nav).toHaveCSS('opacity','1');
+  await expect(page.locator('main')).toHaveAttribute('inert','');
+  await page.keyboard.press('Escape');
+  await expect(nav).toBeHidden();
+  await expect(toggle).toBeFocused();
+  await expect(page.locator('main')).not.toHaveAttribute('inert','');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await toggle.click();
+  await expect(nav).toHaveCSS('transition-duration','0s');
+  await expect(nav).toHaveCSS('opacity','1');
+  await page.setViewportSize({width:1024,height:844});
+  await expect(nav).toBeVisible();
+  await expect(page.locator('body')).not.toHaveClass(/menu-open/);
+});

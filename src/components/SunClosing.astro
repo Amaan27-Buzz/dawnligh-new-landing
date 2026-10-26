@@ -1,18 +1,18 @@
 ---
-import { brand } from '../data/brand';
+import sun from '../../assets/dawnlight with sun svg.svg?raw';
+// Animate the actual source geometry so the last frame needs no image swap.
+const artwork = sun
+  .replace('clip-path="url(#clip0_38_38)"', '')
+  .replace('<svg ', '<svg class="closing__final" aria-hidden="true" ')
+  .replace('<g filter="url(#filter0_dii_38_38)">', '<g class="closing__sun" filter="url(#filter0_dii_38_38)">')
+  .replace('<g filter="url(#filter1_i_38_38)">', '<g class="closing__satellite" filter="url(#filter1_i_38_38)">');
 ---
-<!-- The source SVG provides the unaltered final pose.
-     The standalone sun-disc derivative exists solely for the journey into this pose. -->
 <section class="closing closing--sequence" data-closing aria-label="Dawnlight">
   <div class="closing__frame">
     <div class="closing__composition">
-      <span class="closing__dawn" aria-hidden="true"></span>
       <div class="closing__stage" aria-hidden="true">
         <span class="closing__orbit-track"></span>
-        <img class="closing__traveler closing__traveler--behind" src={brand.orb} alt="" width="290" height="289" decoding="async" loading="lazy"/>
-        <img class="closing__sun-disc" src="/dawnlight%20sun%20disc%20only.svg" alt="" width="582" height="582" decoding="async" loading="lazy"/>
-        <img class="closing__traveler" src={brand.orb} alt="" width="290" height="289" decoding="async" loading="lazy"/>
-        <img class="closing__final" src={brand.sun} alt="" width="582" height="582" decoding="async" loading="lazy"/>
+        <Fragment set:html={artwork}/>
       </div>
       <h2 class="closing__name">DAWNLIGHT</h2>
     </div>

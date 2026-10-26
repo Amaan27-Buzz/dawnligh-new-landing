@@ -6,13 +6,13 @@ const { path = '/' } = Astro.props;
   <div class="shell header-inner">
     <a href="/" class="wordmark" aria-label="Dawnlight home">
       <img class="wordmark-orb" src={brand.orb} alt="" width="36" height="36"/>
-      <span class="wordmark-name">DAWNLIGHT <span class="wordmark-labs">LABS</span></span>
+      <span class="wordmark-name">DAWNLIGHT<span class="wordmark-labs">Labs</span></span>
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation" data-menu-toggle>
-      <span></span><span></span>
+      <span class="menu-lines" aria-hidden="true"></span>
     </button>
     <nav class="header-nav" id="primary-nav" aria-label="Primary">
-      {navigation.map((item) => <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>)}
+      {navigation.map((item) => <a href={item.href} aria-current={path === item.href ? 'page' : path.startsWith(item.href + '/') ? 'location' : undefined}>{item.label}</a>)}
     </nav>
   </div>
 </header>

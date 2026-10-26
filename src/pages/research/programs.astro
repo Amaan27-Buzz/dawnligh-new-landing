@@ -1,0 +1,9 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+const programs = [
+{title:'A shared path for local voice',question:'How should recognition and synthesis share model loading, resources and execution backends?',link:'/notes/local-voice-runtime',label:'Voice runtime article'},
+{title:'Useful intelligence within a budget',question:'How should capability be compared when memory, energy and latency are constrained?',link:'/notes/efficient-intelligence',label:'Efficiency research draft'},
+{title:'Tools that explain their connections',question:'What should an interactive workspace make visible when a person changes part of a system?',link:'/notes/understanding-circuits',label:'Circuit workspace field note'},
+];
+---
+<SiteLayout draft path="/research/programs" title="Research Programs — Dawnlight Labs" description="Draft scopes for focused investigations at Dawnlight Labs."><section class="shell archive-opening"><p class="context">Research programs</p><h1>Focused investigations.</h1><p class="reading-copy">A research area describes a field. A program defines a question to investigate within it.</p></section><section class="shell program-previews"><p class="draft-notice">Planning preview. These are proposed scopes, not announcements of active programs or research results.</p>{programs.map(program=><article class="archive-entry"><h2>{program.title}</h2><div><p>{program.question}</p><a class="plain-link" href={program.link}>{program.label}</a></div></article>)}<a class="plain-link" href="/research">Back to Research</a></section></SiteLayout>

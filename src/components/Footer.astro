@@ -1,19 +1,4 @@
 ---
 import { brand, navigation } from '../data/brand';
 ---
-<footer class="site-footer">
-  <div class="shell footer-main">
-    <div>
-      <a class="footer-wordmark" href="/" aria-label="Dawnlight home"><img src={brand.orb} alt="" width="28" height="28"/> DAWNLIGHT</a>
-      <p class="footer-tagline">An independent research laboratory.<span> Technology built around people.</span></p>
-    </div>
-    <div class="footer-links" aria-label="Footer navigation">
-      {navigation.map(item => <a href={item.href}>{item.label}</a>)}
-    </div>
-  </div>
-  <div class="shell footer-bottom">
-    <span>© {new Date().getFullYear()} Dawnlight · India</span>
-    <a href={'mailto:'+brand.email}>{brand.email}</a>
-    <button type="button" class="footer-back-to-top" data-back-to-top aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></button>
-  </div>
-</footer>
+<footer class="site-footer"><div class="shell"><div class="footer-main"><div><a class="footer-wordmark" href="/" aria-label="Dawnlight home">DAWNLIGHT</a><p>An independent research laboratory.<br/>Technology built around people.</p></div><nav aria-label="Footer">{navigation.map(item=><a href={item.href}>{item.label}</a>)}</nav><a class="footer-email" href={'mailto:'+brand.email}>Have something in mind?<br/><span>{brand.email}</span></a></div><nav class="footer-legal" aria-label="Information"><a href="/notes">Publications &amp; Notes</a><a href="/faq">Questions</a><a href="/site-map">Site map</a><a href="/privacy">Privacy policy</a><a href="/terms">Terms and conditions</a></nav><div class="footer-bottom"><span>© {new Date().getFullYear()} Dawnlight Labs</span><span>India</span><button type="button" data-back-to-top>Back to top</button></div></div></footer>

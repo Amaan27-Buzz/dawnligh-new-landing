@@ -1,0 +1,10 @@
+---
+import SiteLayout from './SiteLayout.astro';
+const { title, description, path } = Astro.props;
+---
+<SiteLayout title={title+' — Dawnlight Labs'} description={description} path={path}>
+  <article class="shell legal-page">
+    <header class="page-opening"><p class="context">Dawnlight Labs</p><h1>{title}</h1><p class="legal-date">Last updated <time datetime="2026-10-26">26 October 2026</time></p></header>
+    <div class="legal-copy"><slot/></div>
+  </article>
+</SiteLayout>

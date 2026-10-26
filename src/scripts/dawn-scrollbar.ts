@@ -1,3 +1,5 @@
+import gsap from 'gsap';
+
 /** Branded scrollbar for desktop pointer devices; document scroll remains native. */
 export function setupDawnScrollbar(): void {
   const root = document.documentElement;
@@ -14,9 +16,12 @@ export function setupDawnScrollbar(): void {
   let thumbHeight = 64;
   let dragOffset = 0;
   let dragging = false;
+  let idleTimer = 0;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  gsap.set(thumb, { xPercent: -50 });
+  const followThumb = gsap.quickTo(thumb, 'y', { duration: .22, ease: 'power3.out' });
 
-  // The compositor owns the thumb's transform. Avoid any animation lag,
-  // including when ScrollTrigger pins a section and changes page length.
+  // Geometry follows document size; only the visual thumb eases during native scroll.
   const measure = () => {
     maxScroll = Math.max(0, root.scrollHeight - window.innerHeight);
     const trackHeight = control.clientHeight;
@@ -27,12 +32,16 @@ export function setupDawnScrollbar(): void {
     control.style.setProperty('--thumb-height', thumbHeight.toFixed(2) + 'px');
     control.dataset.scrollable = maxScroll > 2 ? 'true' : 'false';
     control.tabIndex = maxScroll > 2 ? 0 : -1;
-    paint();
+    paint(true);
   };
 
-  const paint = () => {
+  const paint = (instant = false) => {
     const fraction = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
-    control.style.setProperty('--thumb-y', (fraction * travel).toFixed(2) + 'px');
+    const y = fraction * travel;
+    if (instant || dragging || reduced.matches) {
+      followThumb.tween.pause();
+      gsap.set(thumb, { y });
+    } else followThumb(y);
     const progress = Math.round(fraction * 100);
     control.setAttribute('aria-valuenow', String(progress));
     control.setAttribute('aria-valuetext', progress === 0 ? 'Top of page'
@@ -40,7 +49,11 @@ export function setupDawnScrollbar(): void {
   };
 
   const schedulePaint = () => {
-    if (!enabled || raf) return;
+    if (!enabled) return;
+    control.classList.add('is-scrolling');
+    clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(() => control.classList.remove('is-scrolling'), 850);
+    if (raf) return;
     raf = window.requestAnimationFrame(() => { raf = 0; paint(); });
   };
 
@@ -52,8 +65,7 @@ export function setupDawnScrollbar(): void {
       dragging = false;
       return;
     }
-    // Measure after the native scrollbar disappears, preventing a
-    // one-frame mismatch between actual document height and thumb size.
+    // Measure after initialization; the native gutter stays reserved.
     window.requestAnimationFrame(measure);
   };
 
@@ -63,14 +75,13 @@ export function setupDawnScrollbar(): void {
     const top = Math.max(0, Math.min(travel, clientY - rect.top - dragOffset));
     const fraction = travel > 0 ? top / travel : 0;
     window.scrollTo({ top: maxScroll * fraction, behavior: 'instant' });
-    paint();
+    paint(true);
   };
 
   control.addEventListener('pointerdown', event => {
     if (!enabled || event.button !== 0 || maxScroll <= 0) return;
     event.preventDefault();
-    const rect = control.getBoundingClientRect();
-    const thumbTop = rect.top + ((window.scrollY / maxScroll) * travel);
+    const thumbTop = thumb.getBoundingClientRect().top;
     // Thumb drag preserves pointer offset; track click centers the thumb.
     const onThumb = event.clientY >= thumbTop && event.clientY <= thumbTop + thumbHeight;
     dragOffset = onThumb ? event.clientY - thumbTop : thumbHeight / 2;
@@ -110,7 +121,7 @@ export function setupDawnScrollbar(): void {
     }
     event.preventDefault();
     window.scrollTo({ top: Math.max(0, Math.min(maxScroll, target)), behavior: 'instant' });
-    paint();
+    paint(true);
   });
 
   window.addEventListener('scroll', schedulePaint, { passive:true });

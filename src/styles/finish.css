@@ -156,12 +156,12 @@ html { scrollbar-width:thin; scrollbar-color:#59715c #eef0e9; }
 .experience__terminal-approval span:first-child{color:#FEE144}
 .experience__terminal-lock{color:#FEE144;opacity:.75}
 @media(prefers-reduced-motion:no-preference){
- .experience:not(.is-paused) .xp-link-lines path,.experience:not(.is-paused) .xp-kine-traces path {animation:xp-flow 9s linear infinite}
- .experience:not(.is-paused) .xp-tako-wave{transform-origin:center;animation:xp-tako-breathe 4s ease-in-out infinite alternate}
- .experience:not(.is-paused) .xp-orbit ellipse{transform-origin:350px 245px;animation:xp-orbit 25s linear infinite}
- .experience:not(.is-paused) .experience__scan{animation:xp-scan 6s linear infinite}
- .experience:not(.is-paused) .experience__terminal-skeleton i{animation:xp-terminal 4s ease-in-out infinite alternate}
- .experience:not(.is-paused) .experience__terminal-prompt i{animation:blink 1s steps(1) infinite}
+ .experience .xp-link-lines path,.experience .xp-kine-traces path {animation:xp-flow 9s linear infinite}
+ .experience .xp-tako-wave{transform-origin:center;animation:xp-tako-breathe 4s ease-in-out infinite alternate}
+ .experience .xp-orbit ellipse{transform-origin:350px 245px;animation:xp-orbit 25s linear infinite}
+ .experience .experience__scan{animation:xp-scan 6s linear infinite}
+ .experience .experience__terminal-skeleton i{animation:xp-terminal 4s ease-in-out infinite alternate}
+ .experience .experience__terminal-prompt i{animation:blink 1s steps(1) infinite}
 }
 @keyframes xp-flow{to{stroke-dashoffset:-140}}
 @keyframes xp-orbit{to{rotate:360deg}}

@@ -1,21 +1,76 @@
----
-import { brand } from '../data/brand';
----
-<!-- A non-blocking, cinematic identity reveal on every fresh homepage load.
-     The blue orb is always the original master SVG. -->
+<!-- Crescent geometry and palette from the supplied gemini-svg.svg. -->
 <div class="intro-sequence" data-intro aria-hidden="true">
-  <span class="intro-sequence__glow"></span>
   <div class="intro-sequence__lockup">
     <div class="intro-sequence__mark" data-intro-mark>
-      <img class="intro-sequence__base" src="/dawnlight%20orb%20core.svg" width="290" height="289" alt="" fetchpriority="high"/>
-      <img class="intro-sequence__lit" src={brand.orb} width="290" height="289" alt="" fetchpriority="high"/>
-      <span class="intro-sequence__arc"></span>
-      <span class="intro-sequence__glint"></span>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" class="intro-sequence__svg" aria-hidden="true">
+  <defs>
+<clipPath id="orb-clip">
+      <circle cx="250" cy="250" r="200" />
+    </clipPath>
+<radialGradient id="orb-base-blue" cx="65%" cy="65%" r="75%">
+      <stop offset="0%" stop-color="#1862c6" />
+      <stop offset="55%" stop-color="#0d499e" />
+      <stop offset="100%" stop-color="#072d72" />
+    </radialGradient>
+<radialGradient id="parallax-mid-navy" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#052360" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#08347c" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#0d499e" stop-opacity="0" />
+    </radialGradient>
+<radialGradient id="parallax-deep-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#011545" />
+      <stop offset="48%" stop-color="#031f5c" stop-opacity="0.9" />
+      <stop offset="80%" stop-color="#08337a" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#0d499e" stop-opacity="0" />
+    </radialGradient>
+<linearGradient id="crescent-fill" x1="25%" y1="20%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#7ebbf2" />
+      <stop offset="45%" stop-color="#a5d4f9" />
+      <stop offset="85%" stop-color="#cde8fd" />
+      <stop offset="100%" stop-color="#9bc5e8" />
+    </linearGradient>
+<filter id="crescent-soft-edge" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" />
+    </filter>
+
+    <filter id="azure-glow-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7" />
+    </filter>
+<mask id="crescent-swipe-mask">
+      <rect x="0" y="0" width="500" height="500" fill="black" />
+<g class="swipe-lead">
+        <circle cx="250" cy="250" r="225" fill="white" filter="url(#crescent-soft-edge)" />
+      </g>
+<g class="swipe-trail">
+        <circle cx="195" cy="192" r="206" fill="black" filter="url(#crescent-soft-edge)" />
+      </g>
+    </mask>
+  </defs>
+<g class="brand-container">
+    <g clip-path="url(#orb-clip)">
+<circle cx="250" cy="250" r="202" fill="url(#orb-base-blue)" />
+<g class="parallax-rim">
+        <circle cx="310" cy="310" r="190" fill="#1b6ad1" opacity="0.35" filter="url(#azure-glow-blur)" />
+      </g>
+      <g class="parallax-mid">
+        <circle cx="200" cy="195" r="220" fill="url(#parallax-mid-navy)" />
+      </g>
+      <g class="parallax-core">
+        <circle cx="175" cy="175" r="165" fill="url(#parallax-deep-core)" />
+      </g>
+<g mask="url(#crescent-swipe-mask)">
+<circle cx="250" cy="250" r="202" fill="url(#crescent-fill)" />
+<g class="swipe-trail">
+          <circle cx="199" cy="196" r="206" fill="none" stroke="#4ea0f0" stroke-width="10" opacity="0.65" filter="url(#azure-glow-blur)" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
     </div>
     <div class="intro-sequence__words" data-intro-words>
-      <span class="intro-sequence__name">DAWNLIGHT <span>LABS</span></span>
-      <span class="intro-sequence__rule"></span>
+      <span class="intro-sequence__name">DAWNLIGHT</span>
+      <span class="intro-sequence__descriptor">INDEPENDENT RESEARCH LABORATORY</span>
     </div>
   </div>
-  <span class="intro-sequence__bottom">INDEPENDENT RESEARCH LABORATORY · INDIA</span>
 </div>

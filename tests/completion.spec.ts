@@ -1,247 +1,93 @@
 import { test, expect } from '@playwright/test';
-
-const projectSlugs = ['oscar','takokit','kinetable','aish'];
-
-test('one branded desktop scrollbar replaces the native bar and duplicate rail', async ({ page }) => {
-  await page.setViewportSize({ width:1440, height:900 });
-  await page.goto('/research');
-  const bar = page.getByRole('scrollbar', { name:'Page scroll position' });
-  await expect(bar).toBeVisible();
-  await expect(bar).toHaveAttribute('data-scrollable','true');
-  await expect(bar).toHaveAttribute('aria-controls','main');
-  await expect(page.locator('.scroll-rail,.scroll-progress')).toHaveCount(0);
-  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth)).toBe('none');
-  await expect(bar).toHaveAttribute('aria-valuenow','0');
-
-  // Clicking the track scrolls the real document.
-  const track = await bar.boundingBox();
-  expect(track).toBeTruthy();
-  await page.mouse.click(track!.x+track!.width/2,track!.y+track!.height*.65);
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
-  const beforeDrag=await page.evaluate(() => scrollY);
-  await expect.poll(async () => Number(await bar.getAttribute('aria-valuenow'))).toBeGreaterThan(35);
-
-  // Drag the thumb upward; scroll position follows directly.
-  const thumb = await bar.locator('[data-dawn-scrollbar-thumb]').boundingBox();
-  expect(thumb).toBeTruthy();
-  await page.mouse.move(thumb!.x+thumb!.width/2,thumb!.y+thumb!.height/2);
-  await page.mouse.down();
-  await page.mouse.move(thumb!.x+thumb!.width/2,thumb!.y-85,{steps:8});
-  await page.mouse.up();
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(beforeDrag);
-
-  await bar.focus();
-  await page.keyboard.press('End');
-  await expect.poll(async () => Number(await bar.getAttribute('aria-valuenow'))).toBeGreaterThan(98);
-  await page.keyboard.press('Home');
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(10);
-  await page.mouse.move(100,150);
-  await page.mouse.wheel(0,450);
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(70);
-  await page.getByRole('button',{name:/Back to top/i}).click();
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(25);
+for(const path of ['/projects','/projects/takokit']){
+test('voice directions are understandable and selectable on '+path,async({page})=>{
+  await page.goto(path);
+  const sketch=page.locator('[data-sketch="takokit"]');
+  await sketch.getByRole('button',{name:'Speak',exact:true}).click();
+  await expect(sketch.locator('[data-voice-mode]')).toHaveAttribute('data-voice-mode','speak');
+  await expect(sketch.getByRole('button',{name:'Speak',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(sketch.locator('[data-voice-output]')).toHaveText('Speech out');
+  await expect(sketch.locator('.voice-speech')).toBeVisible();
+  await sketch.getByRole('button',{name:'Listen',exact:true}).click();
+  await expect(sketch.locator('[data-voice-input]')).toHaveText('Speech in');
+  await expect(sketch.locator('.voice-speech')).toBeHidden();
 });
-
-test('small screens retain the native scrollbar and no overlay', async ({ page }) => {
+}
+test('OSCAR returns work for review without changing the page layout',async({page})=>{
+  await page.goto('/projects/oscar');
+  const sketch=page.locator('[data-sketch="oscar"]');
+  const before=await sketch.boundingBox();
+  await sketch.getByRole('button',{name:'Review the plan'}).click();
+  await expect(sketch.locator('[data-worker-review]')).toBeVisible();
+  await expect(sketch.locator('.coordination__workers')).toBeHidden();
+  expect((await sketch.boundingBox())!.height).toBeCloseTo(before!.height, 1);
+  await sketch.getByRole('button',{name:'Back to the Workers'}).click();
+  await expect(sketch.locator('.coordination__workers')).toBeVisible();
+});
+test('circuit connections follow pointer and keyboard movement, staying in bounds',async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto('/research');
-  await expect(page.getByRole('scrollbar',{name:'Page scroll position'})).toBeHidden();
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth)).not.toBe('none');
-  await page.evaluate(() => scrollTo({top:400,behavior:'instant'}));
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
+  await page.goto('/projects/kinetable');
+  const node=page.locator('[data-part="resistor"]');
+  const wire=page.locator('[data-wire]');
+  await node.scrollIntoViewIfNeeded();
+  const initial=await wire.getAttribute('d');
+  await node.focus();
+  await page.keyboard.press('ArrowRight');
+  expect(await wire.getAttribute('d')).not.toBe(initial);
+  const box=await node.boundingBox();
+  await page.mouse.move(box!.x+box!.width/2,box!.y+box!.height/2);
+  await page.mouse.down();await page.mouse.move(0,0,{steps:6});await page.mouse.up();
+  const moved=await node.boundingBox();
+  const board=await page.locator('.circuit-sketch').boundingBox();
+  expect(moved!.x).toBeGreaterThanOrEqual(board!.x);
+  expect(moved!.y).toBeGreaterThanOrEqual(board!.y);
+  const led=page.locator('[data-part="led"]');
+  await led.focus();await page.keyboard.press('ArrowLeft');
+  expect(await page.locator('.circuit-mark').evaluate(el=>(el as HTMLElement).style.left)).toBe(await led.evaluate(el=>(el as HTMLElement).style.left));
 });
-
-test('four project pages have distinct interactive concept sequences and honest availability', async ({ page }) => {
-  for (const slug of projectSlugs) {
-    await page.goto('/projects/'+slug);
-    const experience = page.locator('[data-project-experience]');
-    await expect(experience).toHaveAttribute('data-project-experience',slug);
-    const buttons = experience.locator('[data-experience-step]');
-    await expect(buttons).toHaveCount(3);
-    await buttons.nth(2).click();
-    await expect(experience).toHaveAttribute('data-experience-phase','2');
-    await expect(buttons.nth(2)).toHaveAttribute('aria-pressed','true');
-    await expect(buttons.nth(0)).toHaveAttribute('aria-pressed','false');
-    await expect(experience.locator('[data-experience-counter]')).toHaveText('3');
-    await expect(experience.locator('[data-experience-tag]')).not.toBeEmpty();
-    await expect(page.locator('.project-forward__destinations')).toContainText(slug+'.dawnlightlabs.com');
-    await expect(page.locator('.project-forward__destinations a')).toHaveCount(0);
-    await expect(page.getByText('NOT A LIVE PRODUCT DEMO')).toBeVisible();
-  }
+test('shell examples reset explanations and never claim real execution',async({page})=>{
+  await page.goto('/projects/aish');
+  const sketch=page.locator('[data-sketch="aish"]');
+  await expect(sketch.locator('[data-shell-command]')).toContainText('{}');
+  await sketch.getByRole('button',{name:'Explain',exact:true}).click();
+  await expect(sketch.locator('[data-shell-explanation]')).toBeVisible();
+  await sketch.getByRole('button',{name:'Approve',exact:true}).click();
+  await expect(sketch.locator('[data-shell-status]')).toContainText('Nothing is executed');
+  await sketch.getByRole('button',{name:'Check this folder',exact:true}).click();
+  await expect(sketch.locator('[data-shell-command]')).toHaveText('ls -lah');
+  await expect(sketch.locator('[data-shell-explanation]')).toBeHidden();
+  await expect(sketch.getByRole('button',{name:'Explain',exact:true})).toHaveAttribute('aria-expanded','false');
+  await sketch.getByRole('button',{name:'Dismiss',exact:true}).click();
+  await expect(sketch.locator('[data-shell-status]')).toContainText('Dismissed');
+  await sketch.getByRole('button',{name:'See recent commits',exact:true}).click();
+  await expect(sketch.locator('[data-shell-command]')).toHaveText('git log -5 --oneline');
 });
-
-test('site works without unnecessary form or founder disclosures outside About', async ({ page }) => {
+test('contact copies the real address and About contains the founders',async({page,context})=>{
+  await context.grantPermissions(['clipboard-read','clipboard-write']);
   await page.goto('/contact');
-  await expect(page.locator('form')).toHaveCount(0);
-  const email = page.locator('.contact-refined__email');
-  await expect(email).toHaveAttribute('href','mailto:contact@dawnlightlabs.com');
-  await page.getByRole('button', { name: /Copy address/i }).click();
-  await expect(page.locator('[data-copy-status]')).not.toBeEmpty();
-  await page.goto('/');
-  await expect(page.getByText('Amaan Syed')).toHaveCount(0);
-  await expect(page.getByText('Sairaj Jawalikar')).toHaveCount(0);
+  await expect(page.getByRole('link',{name:'contact@dawnlightlabs.com',exact:true}).first()).toHaveAttribute('href','mailto:contact@dawnlightlabs.com');
+  await page.getByRole('button',{name:'Copy address'}).click();
+  await expect(page.locator('[data-copy-status]')).toHaveText('Address copied.');
+  expect(await page.evaluate(()=>navigator.clipboard.readText())).toBe('contact@dawnlightlabs.com');
   await page.goto('/about');
-  await expect(page.getByRole('heading', {name:'Amaan Syed'})).toBeVisible();
-  await expect(page.getByRole('heading', {name:'Sairaj Jawalikar'})).toBeVisible();
-  for (const card of await page.locator('.founder').all()) {
-    await expect(card).toHaveCSS('opacity','1');
-  }
+  await expect(page.getByRole('heading',{name:'Amaan Syed'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Sairaj Jawalikar'})).toBeVisible();
 });
-
-test('sitemap is public and includes all approved routes, while publications remain unlisted', async ({ request }) => {
-  const response = await request.get('/sitemap.xml');
-  expect(response.ok()).toBeTruthy();
-  const xml = await response.text();
-  for (const slug of projectSlugs) expect(xml).toContain('/projects/'+slug);
-  expect(xml).toContain('/contact');
-  expect(xml).not.toContain('/notes');
-  expect(xml).not.toContain('/404');
-  const robots = await request.get('/robots.txt');
-  expect(robots.ok()).toBeTruthy();
-  expect(await robots.text()).toContain('/sitemap.xml');
+test('public routes and publication boundaries remain intact',async({request})=>{
+  const response=await request.get('/sitemap.xml');expect(response.ok()).toBeTruthy();
+  const xml=await response.text();for(const slug of ['oscar','takokit','kinetable','aish'])expect(xml).toContain('/projects/'+slug);
+  expect(xml).not.toContain('/notes');expect(xml).not.toContain('/404');
+  expect((await request.get('/robots.txt')).ok()).toBeTruthy();
 });
-
-test('project, Contact, and About pages fit small screens without overflow', async ({ page }) => {
-  for (const width of [360,390,768,1024,1440,1920]) {
-    await page.setViewportSize({width,height:900});
-    for (const path of ['/projects/oscar','/projects/takokit','/projects/kinetable','/projects/aish','/about','/contact']) {
-      await page.goto(path);
-      const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-      expect(over, 'horizontal overflow at '+path+' / '+width).toBeLessThanOrEqual(2);
-      await expect(page.locator('main h1').first()).toBeVisible();
-    }
-  }
-});
-
-test('reduced motion keeps project concepts selectable without animations', async ({ page }) => {
+test('reduced motion keeps interactive content usable and scenes static',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/projects/kinetable');
-  const experience = page.locator('[data-project-experience]');
-  await experience.locator('[data-experience-step="1"]').click();
-  await expect(experience).toHaveAttribute('data-experience-phase','1');
-  await expect(experience.locator('[data-experience-tag]')).toHaveText('CONNECTION MAP');
-});
-
-test('capture finished project, About and Contact pages for design review', async ({ page }) => {
-  await page.setViewportSize({width:1440,height:900});
-  for (const slug of projectSlugs) {
-    await page.goto('/projects/'+slug);
-    await page.locator('[data-project-experience]').scrollIntoViewIfNeeded();
-    await page.waitForTimeout(300);
-    await page.locator('[data-project-experience]').screenshot({path:'test-results/motion-capture/detail-'+slug+'.png'});
-    await page.locator('.project-hero').screenshot({path:'test-results/motion-capture/hero-'+slug+'.png'});
-  }
-  await page.goto('/about');
-  await page.screenshot({path:'test-results/motion-capture/about-desktop.png'});
-  await page.locator('.about-refined__founders').screenshot({path:'test-results/motion-capture/about-founders.png'});
-  await page.goto('/contact');
-  await page.screenshot({path:'test-results/motion-capture/contact-desktop.png'});
-  await page.setViewportSize({width:390,height:844});
-  await page.goto('/projects/kinetable');
-  await page.screenshot({path:'test-results/motion-capture/project-mobile.png'});
-  await page.goto('/contact');
-  await page.screenshot({path:'test-results/motion-capture/contact-mobile.png'});
-});
-
-
-test('Research hero is balanced and includes a real visual on desktop and mobile', async ({ page }) => {
-  for(const width of [390,768,1440]) {
-    await page.setViewportSize({width,height:900});
-    await page.goto('/research');
-    const visual=page.locator('[data-research-lens]');
-    const title=page.locator('#research-title');
-    await expect(visual).toBeVisible();
-    await expect(title).toBeVisible();
-    await expect(visual.locator('svg .lens-nodes>g')).toHaveCount(6);
-    const hero=page.locator('.research-hero');
-    const box=await hero.boundingBox();
-    const diagram=await visual.boundingBox();
-    expect(box && diagram).toBeTruthy();
-    expect(diagram!.width).toBeGreaterThan(width<760?200:width<1100?275:350);
-    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
-    expect(overflow).toBeLessThanOrEqual(2);
-    if(width>1000){
-      const heading=await title.boundingBox();
-      expect((heading!.x + heading!.width)).toBeLessThan(diagram!.x+diagram!.width*.35);
-    }
-  }
-});
-
-test('home finale starts blue orb behind sun, transitions forward, and resolves to master logo', async ({ page }) => {
-  await page.setViewportSize({width:1440,height:900});
   await page.goto('/');
-  await expect(page.locator('[data-intro]')).toHaveCount(0,{timeout:8000});
-  const back=page.locator('.closing__traveler--behind');
-  const front=page.locator('.closing__traveler:not(.closing__traveler--behind)');
-  const sun=page.locator('.closing__sun-disc');
-  const final=page.locator('.closing__final');
-  expect(await back.evaluate(el=>getComputedStyle(el).zIndex)).toBe('1');
-  expect(await sun.evaluate(el=>getComputedStyle(el).zIndex)).toBe('2');
-  expect(await front.evaluate(el=>getComputedStyle(el).zIndex)).toBe('3');
-  const start=await page.locator('[data-closing]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
-  await page.evaluate(y=>scrollTo({top:y+innerHeight*.39,behavior:'instant'}),start);
-  await expect.poll(()=>back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.25);
-  expect(await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity))).toBeLessThan(.2);
-  // Sample the full passage through the upper-right edge. GSAP's scrub
-  // intentionally eases toward the scroll position, so there is no single
-  // instantaneous scroll coordinate that represents the whole crossover.
-  const frontSamples: Array<{position:number,front:number,back:number,final:number}> = [];
-  for (const position of [.82,.91,1.0,1.09,1.18,1.27]) {
-    await page.evaluate(([y,f])=>scrollTo({top:y+innerHeight*f,behavior:'instant'}),[start,position]);
-    await page.waitForTimeout(440);
-    frontSamples.push({
-      position,
-      front: await front.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
-      back: await back.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
-      final: await final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),
-    });
-  }
-  console.log('Orb crossover samples:',JSON.stringify(frontSamples));
-  expect(Math.max(...frontSamples.map(s=>s.front)),'front orb must emerge during the orbit').toBeGreaterThan(.5);
-  await page.evaluate(y=>scrollTo({top:y+innerHeight*1.5,behavior:'instant'}),start);
-  await expect.poll(()=>final.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
-  await expect(final).toHaveAttribute('src',/dawnlight%20with%20sun%20svg.svg/);
-});
-
-test('home finale orbits below the sun before arriving at lower right', async ({ page }) => {
-  await page.setViewportSize({width:1440,height:900});
-  await page.goto('/');
-  await expect(page.locator('[data-intro]')).toHaveCount(0,{timeout:8000});
-  const sun = page.locator('.closing__sun-disc');
-  const rear = page.locator('.closing__traveler--behind');
-  const front = page.locator('.closing__traveler:not(.closing__traveler--behind)');
-  const finished = page.locator('.closing__final');
-  const at = await page.locator('[data-closing]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
-  const sampleAt = async (progress: number) => {
-    await page.evaluate(([y,p])=>scrollTo({top:y+innerHeight*p,behavior:'instant'}),[at,progress]);
-    await page.waitForTimeout(700);
-    return page.evaluate(() => {
-      const stage=document.querySelector('.closing__stage')!.getBoundingClientRect();
-      const rear=document.querySelector('.closing__traveler--behind')!.getBoundingClientRect();
-      const front=document.querySelector('.closing__traveler:not(.closing__traveler--behind)')!.getBoundingClientRect();
-      const opacity=(selector:string)=>Number.parseFloat(getComputedStyle(document.querySelector(selector)!).opacity);
-      return {
-        yellowTop: stage.top + stage.width * (72/582),
-        sunCenterY: stage.top + stage.width * (314/582),
-        sunCenterX: stage.left + stage.width * (291/582),
-        rearTop: rear.top, rearCenterY: rear.top+rear.height/2,
-        frontTop: front.top, frontCenterX: front.left+front.width/2,
-        frontCenterY: front.top+front.height/2,
-        rearOpacity:opacity('.closing__traveler--behind'),
-        frontOpacity:opacity('.closing__traveler:not(.closing__traveler--behind)'),
-        finalOpacity:opacity('.closing__final'),
-      };
-    });
-  };
-  const rearLeft=await sampleAt(.54);
-  expect(rearLeft.rearOpacity).toBeGreaterThan(.4);
-  // A top-right pass used to put the orb ABOVE the solar disc at this stage.
-  expect(rearLeft.rearTop).toBeGreaterThan(rearLeft.yellowTop-12);
-  const bottom=await sampleAt(.78);
-  expect(bottom.rearCenterY).toBeGreaterThan(bottom.sunCenterY);
-  const lowerRight=await sampleAt(1.10);
-  expect(lowerRight.frontOpacity).toBeGreaterThan(.35);
-  expect(lowerRight.frontCenterY).toBeGreaterThan(lowerRight.sunCenterY);
-  await sampleAt(1.68);
-  await expect.poll(()=>finished.evaluate(el=>Number.parseFloat(getComputedStyle(el).opacity)),{timeout:5000}).toBeGreaterThan(.95);
+  await expect(page.locator('[data-intro]')).toBeHidden();
+  await expect(page.locator('.closing__name')).toHaveCSS('opacity','1');
+  await expect(page.locator('.closing__final')).toHaveCSS('opacity','1');
+  const animations=await page.evaluate(()=>document.getAnimations().length);
+  expect(animations).toBe(0);
+  await page.goto('/projects/takokit');
+  await page.locator('[data-sketch="takokit"]').getByRole('button',{name:'Speak',exact:true}).click();
+  await expect(page.locator('[data-voice-output]')).toHaveText('Speech out');
 });

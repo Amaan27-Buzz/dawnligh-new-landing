@@ -1,35 +1,10 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { approvedPrograms } from '../data/research';
-import ResearchAtlas from '../components/ResearchAtlas.astro';
-import ResearchHero from '../components/ResearchHero.astro';
+import { researchAreas } from '../data/research';
+import { notes } from '../data/notes';
 ---
-<SiteLayout path="/research" title="Research — Dawnlight Labs" description="The public research interests and principles guiding Dawnlight Labs.">
-  <ResearchHero/>
-  <section class="section" id="areas" aria-labelledby="research-areas">
-    <div class="shell">
-      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">01 / Fields of investigation</span><h2 id="research-areas">Questions we're interested in.</h2></div></div>
-      <ResearchAtlas variant="full"/>
-    </div>
-  </section>
-  {approvedPrograms.length > 0 && <section class="section" id="programs" aria-labelledby="programs-title">
-    <div class="shell">
-      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">02 / Public research programs</span><h2 id="programs-title">Programs approved for public disclosure.</h2></div></div>
-      <div class="research-areas">{approvedPrograms.map((program) => <article class="research-area"><span class="area-number">{program.status}</span><h2>{program.title}</h2><p>{program.summary}</p></article>)}</div>
-    </div>
-  </section>}
-  <section class="section research-culture" aria-labelledby="culture-title">
-    <div class="shell">
-      <div class="section-intro"><div class="section-intro__copy"><span class="eyebrow">02 / Research approach</span><h2 id="culture-title">Curiosity needs evidence.</h2></div></div>
-      <div class="research-culture-grid">
-        <article class="culture-item"><h3>Original questions.</h3><p>Explore what existing approaches leave unresolved, without assuming novelty guarantees a result.</p></article>
-        <article class="culture-item"><h3>Careful experiments.</h3><p>Understand baselines, constraints and limitations before claiming an improvement.</p></article>
-        <article class="culture-item"><h3>People in view.</h3><p>Consider efficiency, clarity, privacy and human control from the start.</p></article>
-      </div>
-    </div>
-  </section>
-  <section class="section"><div class="shell"><div class="about-two-col">
-    <div><span class="eyebrow">03 / Research communication</span><h2>Evidence before announcements.</h2></div>
-    <div><p>We will share research and technical writing when the work is ready and cleared for public release. Unpublished methods, experiments and potential intellectual property remain private.</p></div>
-  </div></div></section>
+<SiteLayout path="/research" title="Research — Dawnlight Labs" description="Dawnlight researches intelligent systems, efficient computing and the relationship between people and technology.">
+<section class="shell research-hub-opening"><p class="context">Research</p><h1>Intelligence, computing,<br/>and the people using them.</h1><p>We investigate how intelligent systems can become more efficient, understandable and useful. Our interests connect the models we build, the machines they run on and the ways people work with them.</p><a class="plain-link" href="#research-writing">Explore the writing</a></section>
+<section class="shell research-fields" aria-labelledby="fields-title"><div class="research-fields__intro"><h2 id="fields-title">What we investigate</h2><p>Six connected areas. Shared questions about capability, resources and human control.</p></div><div class="research-fields__list">{researchAreas.map(area=><article id={area.art}><h3>{area.title}</h3><p>{area.detail}</p></article>)}</div></section>
+<section class="shell research-writing" id="research-writing" aria-labelledby="writing-title"><div class="research-writing__heading"><div><p class="context">From the work</p><h2 id="writing-title">Papers, ideas<br/>and observations.</h2></div><p>Research papers, engineering articles and field notes share one archive. These entries are editorial previews while we prepare the first publications.</p></div><div class="research-writing__list">{notes.map(note=><a href={'/notes/'+note.slug}><span>{note.kind} <small>Draft</small></span><h3>{note.title}</h3><p>{note.summary}</p><span class="plain-link">Read the preview</span></a>)}</div><a class="plain-link" href="/notes">Browse Publications &amp; Notes</a></section>
 </SiteLayout>
